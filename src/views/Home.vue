@@ -159,7 +159,7 @@ onAppEvent(({ type }) => {
           Community $EGG Burn Vote
         </div>
         <div class="mt-2 mb-8 text-xs text-blue-200">
-          Voting Ends on October 18th at 1:30am UTC
+          Voting Has Ended
         </div>
       </div>
       
