@@ -42,7 +42,6 @@ export default (address) => {
   const chadToMinted = async (chadID) => await contract.chadToMinted(chadID).then(response => Boolean(response))
   const chadToSupers = async (chadID) => await contract.chadToSupers(chadID).then(response => Number(response))
   const getShuffledTokenIDSUPERS = async (superID) => await contract.getShuffledTokenID(superID).then(response => Number(response))
-  const getShuffledTokenIDCHAD = async (chadID) => await contract.getShuffledTokenID(chadID).then(response => Number(response))
 
   const id2UpgradeArray = async (superID) => await contract.id2UpgradeArray(superID).then(response => Array(response))
 
@@ -90,7 +89,6 @@ export default (address) => {
     chadToMinted,
     chadToSupers,
     getShuffledTokenIDSUPERS,
-    getShuffledTokenIDCHAD,
     id2UpgradeArray,
     superToUpgradeArray
   }
