@@ -1,9 +1,9 @@
-import useThirdContract from './useThirdContract'
-import useFlatpegContract from './useFlatpegContract'
+import useEggContract from './useEggContract'
+import useVotingContract from './useVotingContract'
 import useUser from './useUser'
 
 export {
-  useThirdContract,
-  useFlatpegContract,
+  useVotingContract,
+  useEggContract,
   useUser,
 }
