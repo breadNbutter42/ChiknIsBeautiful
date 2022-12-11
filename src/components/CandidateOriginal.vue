@@ -93,7 +93,6 @@ const vote = async (_id, _eggs) => {//write to the votewitheggsbycandidate funct
 }
 
 
-
 onAppEvent(({ type, payload }) => {//event logging?
   const events = {//declare events
     'tokensChanged': () => execute(),//tokenchanged execute
