@@ -6,15 +6,15 @@ import IconMedium from '@/assets/icons/medium.svg'
 const socials = [
   {
     icon: IconTwitter,
-    href: 'https://twitter.com/_ChadDoge_'
+    href: 'https://twitter.com/chiknstitute'
   },
   {
     icon: IconDiscord,
-    href: 'https://discord.gg/6VJJcYrawz'
+    href: 'https://discord.gg/CvWbwD6Ndh'
   },
   {
-    icon: IconTwitter,
-    href: 'https://twitter.com/ChadNewsNetwork'
+    icon: IconMedium,
+    href: 'https://medium.com/@chiknstitute/the-1st-annual-chikn-beauty-pageant-4b6e360be5ae'
   }
 ]
 </script>
