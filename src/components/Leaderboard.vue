@@ -19,33 +19,7 @@ const { scores } = toRefs(props)
       <div class="scrollbar max-h-[90vh] w-full">
         <div class="bg-red-500/80 rounded-xl pt-4 pb-2">
           <div class="flex pb-2">
-            <div class="w-full max-w-[70px]">
-              Rank
-            </div>
-            <div class="flex-1 text-left">
-              Name
-            </div>
-            <div class="flex-1">
-              Chikn #ID
-            </div>
-            <div class="flex-1">
-              Votes
-            </div>
-          </div>
-
-          <div v-for="(score, i) in scores" :key="i" class="flex w-full border-t border-blue-300 py-2 text-sm transition hover:bg-white/10">
-            <div class="w-full max-w-[70px]">
-              {{ i + 1 }}
-            </div>
-            <div class="flex-1 text-left">
-              {{score.chiknName}}
-            </div>
-            <div class="flex-1">
-              {{score.token}}
-            </div>
-            <div class="flex-1">
-              {{score.votes}}
-            </div>
+            
           </div>
         </div>
       </div>
