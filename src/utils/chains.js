@@ -56,7 +56,7 @@ export default {
     ensSupported: false
   },
   '0xa869': {
-    name: 'FUJII TESTNET (AVAX)',
+    name: 'FUJI TESTNET (AVAX)',
     explorer: 'https://testnet.snowtrace.io/',
     rpc: 'https://api.avax-test.network/ext/bc/C/rpc',
     currency: 'AVAX',
