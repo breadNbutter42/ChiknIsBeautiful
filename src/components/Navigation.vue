@@ -22,7 +22,7 @@ const { isAuthenticated, isAppNetwork, isAuthenticating, login, logout, wallet, 
           :disabled="isAuthenticating || !wallet || !isAppNetwork"
           :loading="isAuthenticating"
         >
-          {{ wallet ? isAppNetwork ? isAuthenticated ? 'Logout' : 'Connect Wallet' : 'Wrong Network' : 'Unable to detect Avalanche provider' }}
+          {{ wallet ? isAppNetwork ? isAuthenticated ? 'Logout' : 'Connect Wallet' : 'Wrong Network' : 'Unable to detect Ethereum provider' }}
         </Button>
       </div>
     </div>
