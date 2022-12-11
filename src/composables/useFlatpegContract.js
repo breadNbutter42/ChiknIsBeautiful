@@ -54,6 +54,7 @@ export default (address) => {
   const getOwnershipDataUPGRADE = async (upgradeID) => await contract.getOwnershipData(upgradeID).then(response => String(response))
 
   //tuple response for getOwnershipData
+  
   //https://gist.github.com/fnky/0a6cd5f39a7ad0ace79a7a4f5c999691
 
   const isApprovedForAll = async (payload) => await contract.isApprovedForAll(payload ?? address.value, VITE_CONTRACT_THIRD).then(response => Number(response))
