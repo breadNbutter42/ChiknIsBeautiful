@@ -6,15 +6,28 @@ import { notify } from 'notiwind'
 
 const { on: onAppEvent, emit: emitAppEvent } = useEventBus('app')
 const { address, isAuthenticated, isAuthenticating, login } = useUser()
+
+const { SbalanceOf, Sname, Ssymbol, } = useSupersContract(address)
+//could display total Supers owned
+
+const { CbalanceOf, Cname, Csymbol } = useChadsContract(address)
+//could display total Chads owned
+
 const { upgradeChad, fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, preminted, vialToF, chadToMinted } = useThirdContract(address)
-//upgrade chad gets a button far right
-//fVialsSet, chadToMinted dummy checks
-//fVialsBurned, nVialsBurned, vialsBurned 
-// preminted = totalVials, 6 is totalVialsF, (preminted-6) = totalVialsN
-const { VsetApprovalForAllALLOW, VsetApprovalForAllREVOKE, Vname, Vsymbol, VtokenURI, VunrevealedURI, VtotalSupply,
-    VbalanceOf,
-    VgetOwnershipDataVIAL,
-    VisApprovedForAll } = useVialsContract(address)
+//upgradeChad gets a button far right
+//fVialsSet, chadToMinted dummy checks. 
+//if VialToF = true, vials is type F, else type N
+//fVialsBurned, nVialsBurned, vialsBurned     
+//can do double display like N Vials Burned 12/2494
+//preminted = totalVials; 6 = totalVialsF; (preminted-6) = totalVialsN
+
+const { VsetApprovalForAllALLOW, VsetApprovalForAllREVOKE, Vname, Vsymbol, VbalanceOf, VgetOwnershipDataVIAL, VisApprovedForAll } = useVialsContract(address)
+//VsetApprovalForAllALLOW, VsetApprovalForAllREVOKE for approval button two modes. VisApprovedForAll double checks approval
+// Vname, Vsymbol to display info
+// VbalanceOf, VgetOwnershipDataVIAL, could use to check ownership or use joepegs api, display total owned
+//joepegs api can get images of individual Chads and Vials from 'metadata' https://joepegs.dev/api#tag/Collections/operation/get_item_v2_collections__collection_address__tokens__token_id__get
+//same here, plus check all tokens owned, for use in our drop down menu https://joepegs.dev/api#tag/Users/operation/get_user_items_v2_users__address__items_get
+
 
 const loadAllowanceState = async () => {
   try {
