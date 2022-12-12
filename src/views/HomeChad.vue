@@ -113,31 +113,6 @@ const setVApprovalForAll = async (_VapprovalBool) => {
   }
 }
 
-const upgradeChadPending = ref(false)
-const upgradeChad = async () => {
-  upgradeChadPending.value = true
-  try {
-    const tx = await upgradeChad()
-    const receipt = await tx.wait()
-
-    notify({
-      type: 'success',
-      title: 'UpgradingChad',
-      text: `Chad Upgraded : Super Created`
-    })
-    emitAppEvent({ type: 'VtokensChanged' })
-
-    return Promise.resolve(receipt)
-  } catch (error) {
-    notify({
-      type: 'error',
-      title: 'UpgradingChad',
-      text: error.reason ?? error.message
-    })
-  } finally {
-    upgradeChadPending.value = false
-  }
-}
 
 /*
 const onCandidateLoad = (candidate) => {
@@ -187,15 +162,9 @@ onAppEvent(({ type }) => {
           <Button
             :loading="VapprovalPending"
             :disabled="VapprovalPending || !isAuthenticated || isAuthenticating"
-            @click="approvalState.approval === 0 ? setApprove(1000) : setApprove(0)"
+            @click="approvalState.approval === 0 ? setApprove(true) : setApprove(false)"
           >
             {{ approvalState.approval === 0 ? 'Approve' : 'Revoke' }} ${{ approvalState.symbol }} spending
-          </Button>
-          <Button
-            :disabled="!approvalState.approval"
-            @click="upgradeChad()"
-          >
-            Vote 1 $EGG for every candidate
           </Button>
           <Button @click="toggleLeaderboard()">
             Open leaderboard
