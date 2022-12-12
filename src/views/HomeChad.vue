@@ -4,12 +4,17 @@ import { useAsyncState, useEventBus, useToggle } from '@vueuse/core'
 import { useChadsContract, useSupersContract, useVialsContract, useUpgradesContract, useUser, useThirdContract } from '@/composables'
 import { notify } from 'notiwind'
 
-const candidates = ref(randomize(candidateIds))
-
 const { on: onAppEvent, emit: emitAppEvent } = useEventBus('app')
 const { address, isAuthenticated, isAuthenticating, login } = useUser()
-const { symbol, allowance, approve, balanceOf } = useEggContract(address)
-const { voteOneEggForEachCandidate, prizeMoneyTotalWei, eggBurntTotalWei, allVotesTotalBase, totalVotesFromVoterAddress, votingTimeLeftBlockTimestampHours } = useVotingContract(address)
+const { upgradeChad, fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, preminted, vialToF, chadToMinted } = useThirdContract(address)
+//upgrade chad gets a button far right
+//fVialsSet, chadToMinted dummy checks
+//fVialsBurned, nVialsBurned, vialsBurned 
+// preminted = totalVials, 6 is totalVialsF, (preminted-6) = totalVialsN
+const { VsetApprovalForAllALLOW, VsetApprovalForAllREVOKE, Vname, Vsymbol, VtokenURI, VunrevealedURI, VtotalSupply,
+    VbalanceOf,
+    VgetOwnershipDataVIAL,
+    VisApprovedForAll } = useVialsContract(address)
 
 const loadAllowanceState = async () => {
   try {
