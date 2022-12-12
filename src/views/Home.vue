@@ -47,7 +47,7 @@ const loadVApprovalState = async () => {
 }
 
 const loadUserVApproval = async () => {
-  if (!isApproved.value) return false
+  if (!isAuthenticated.value) return false
 
   const _Vapproval = await VisApprovedForAll()
   return Promise.resolve(_Vapproval)
