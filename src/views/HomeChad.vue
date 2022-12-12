@@ -97,9 +97,9 @@ const setVApprovalForAll = async (_VapprovalBool) => {
     notify({
       type: 'success',
       title: 'Vials Approval',
-      text: `${_VapprovalBool === false ? 'Revoked' : 'Approved'} $${approvalState.value.symbol} Vials Approval`
+      text: `${_VapprovalBool === false ? 'Revoked' : 'Approved'} $${approvalState.value.symbol} Vials (Approval For All)`
     })
-    emitAppEvent({ type: 'tokensChanged' })
+    emitAppEvent({ type: 'VtokensChanged' })
 
     return Promise.resolve(receipt)
   } catch (error) {
@@ -113,32 +113,33 @@ const setVApprovalForAll = async (_VapprovalBool) => {
   }
 }
 
-const votePending = ref(false)
-const vote1Egg = async () => {
-  votePending.value = true
+const upgradeChadPending = ref(false)
+const upgradeChad = async () => {
+  upgradeChadPending.value = true
   try {
-    const tx = await voteOneEggForEachCandidate()
+    const tx = await upgradeChad()
     const receipt = await tx.wait()
 
     notify({
       type: 'success',
-      title: 'Voting',
-      text: `Voted 1 $EGG for each candidate`
+      title: 'UpgradingChad',
+      text: `Chad Upgraded : Super Created`
     })
-    emitAppEvent({ type: 'tokensChanged' })
+    emitAppEvent({ type: 'VtokensChanged' })
 
     return Promise.resolve(receipt)
   } catch (error) {
     notify({
       type: 'error',
-      title: 'Voting',
+      title: 'UpgradingChad',
       text: error.reason ?? error.message
     })
   } finally {
-    votePending.value = false
+    upgradeChadPending.value = false
   }
 }
 
+/*
 const onCandidateLoad = (candidate) => {
   const index = candidates.value.findIndex(t => t.token === candidate.token)
   candidates.value[index] = {
@@ -150,6 +151,7 @@ const onCandidateLoad = (candidate) => {
 const candidatesSorted = computed(() => candidates.value.sort((a, b) => b.votes - a.votes))
 
 const [leaderboard, toggleLeaderboard] = useToggle(false)
+*/
 
 onAppEvent(({ type }) => {
   const events = {
@@ -157,7 +159,7 @@ onAppEvent(({ type }) => {
       loadApproval()
       loadStats()
     },
-    'tokensChanged': () => {
+    'VtokensChanged': () => {
       loadApproval()
       loadStats()
     }
@@ -193,7 +195,7 @@ onAppEvent(({ type }) => {
           </Button>
           <Button
             :disabled="!approvalState.approval"
-            @click="vote1Egg()"
+            @click="upgradeChad()"
           >
             Vote 1 $EGG for every candidate
           </Button>
