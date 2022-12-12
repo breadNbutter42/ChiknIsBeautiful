@@ -21,50 +21,51 @@ const { upgradeChad, fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, premint
 //can do double display like N Vials Burned 12/2494
 //preminted = totalVials; 6 = totalVialsF; (preminted-6) = totalVialsN
 
-const { VsetApprovalForAllALLOW, VsetApprovalForAllREVOKE, Vname, Vsymbol, VbalanceOf, VgetOwnershipDataVIAL, VisApprovedForAll } = useVialsContract(address)
-//VsetApprovalForAllALLOW, VsetApprovalForAllREVOKE for approval button two modes. VisApprovedForAll double checks approval
+const { VsetApprovalForAll, Vname, Vsymbol, VbalanceOf, VgetOwnershipDataVIAL, VisApprovedForAll } = useVialsContract(address)
+//VsetApprovalForAll for approval button two modes. VisApprovedForAll double checks approval
 // Vname, Vsymbol to display info
 // VbalanceOf, VgetOwnershipDataVIAL, could use to check ownership or use joepegs api, display total owned
 //joepegs api can get images of individual Chads and Vials from 'metadata' https://joepegs.dev/api#tag/Collections/operation/get_item_v2_collections__collection_address__tokens__token_id__get
 //same here, plus check all tokens owned, for use in our drop down menu https://joepegs.dev/api#tag/Users/operation/get_user_items_v2_users__address__items_get
 
 
-
-const loadAllowanceState = async () => {
+const VloadApprovalState = async () => {
   try {
-    const [ _symbol, _allowance] = await Promise.all([symbol(), loadUserAllowance()])
+    const [ _Vsymbol, _Vapproval] = await Promise.all([Vsymbol(), VloadUserApproval()])
 
     return Promise.resolve({
-      symbol: _symbol,
-      allowance: _allowance
+      Vsymbol: _Vsymbol,
+      Vapproval: _Vapproval
     })
   } catch (error) {
     notify({
       type: 'error',
-      title: 'Allowance State',
+      title: 'Vials Approval State',
       text: error.reason ?? error.message
     })
   }
 }
 
-const loadUserAllowance = async () => {
-  if (!isAuthenticated.value) return 0
+const VloadUserApproval = async () => {
+  if (!isApproved.value) return false
 
-  const _allowance = await allowance()
-  return Promise.resolve(_allowance)
+  const _Vapproval = await VisApprovedForAll()
+  return Promise.resolve(_Vapproval)
 }
 
-const { state: allowanceState, execute: loadAllowance } = useAsyncState(() => loadAllowanceState(), {}, { resetOnExecute: false })
+const { state: approvalState, execute: loadApproval } = useAsyncState(() => loadApprovalState(), {}, { resetOnExecute: false })
 
-const loadContractState = async () => {
+const loadThirdContractState = async () => {
   try {
-    const [burned, votes, prize, timestamp, user] = await Promise.all([eggBurntTotalWei(), allVotesTotalBase(), prizeMoneyTotalWei(), votingTimeLeftBlockTimestampHours(), loadUserState()])
+    const [fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, preminted, vialToF, user] = await Promise.all([fVialsBurned(), nVialsBurned(), vialsBurned(), fVialsSet(), preminted(), vialToF(), loadUserState])
 
     return Promise.resolve({
-      burned,
-      votes,
-      prize,
-      timestamp,
+      fVialsBurned, 
+      nVialsBurned, 
+      vialsBurned, 
+      fVialsSet, 
+      preminted, 
+      vialToF,
       ...user
     })
   } catch (error) {
@@ -73,30 +74,30 @@ const loadContractState = async () => {
 }
 
 const loadUserState = async () => {
-  if (!isAuthenticated.value) return Promise.resolve({ balance: 0, addressVotes: 0 })
+  if (!isAuthenticated.value) return Promise.resolve({ Cbalance: 0, Vbalance: 0, Sbalance: 0 })
   try {
-    const [balance, addressVotes] = await Promise.all([balanceOf(), totalVotesFromVoterAddress()])
+    const [Cbalance, Vbalance, Sbalance] = await Promise.all([CbalanceOf(), VbalanceOf(), SbalanceOf()])
 
-    return Promise.resolve({ balance, addressVotes })
+    return Promise.resolve({ Cbalance, Vbalance, Sbalance })
   } catch (error) {
     console.log(error)
   }
 }
 
-const { state, execute: loadStats } = useAsyncState(() => loadContractState(), {}, { resetOnExecute: false })
+const { state, execute: loadStats } = useAsyncState(() => loadThirdContractState(), {}, { resetOnExecute: false })
 
 
-const approvalPending = ref(false)
-const setApprove = async (_count) => {
-  approvalPending.value = true
+const VapprovalPending = ref(false)
+const setVApprovalForAll = async (_VapprovalBool) => {
+  VapprovalPending.value = true
   try {
-    const tx = await approve(_count)
+    const tx = await Vapprove(_VapprovalBool)
     const receipt = await tx.wait()
 
     notify({
       type: 'success',
-      title: 'Allowance',
-      text: `${_count === 0 ? 'Revoked' : 'Approved'} $${allowanceState.value.symbol} allowance`
+      title: 'Vials Approval',
+      text: `${_VapprovalBool === false ? 'Revoked' : 'Approved'} $${approvalState.value.symbol} Vials Approval`
     })
     emitAppEvent({ type: 'tokensChanged' })
 
@@ -104,11 +105,11 @@ const setApprove = async (_count) => {
   } catch (error) {
     notify({
       type: 'error',
-      title: 'Allowance',
+      title: 'Approval',
       text: error.reason ?? error.message
     })
   } finally {
-    approvalPending.value = false
+    VapprovalPending.value = false
   }
 }
 
@@ -153,11 +154,11 @@ const [leaderboard, toggleLeaderboard] = useToggle(false)
 onAppEvent(({ type }) => {
   const events = {
     'accountsChanged': () => {
-      loadAllowance()
+      loadApproval()
       loadStats()
     },
     'tokensChanged': () => {
-      loadAllowance()
+      loadApproval()
       loadStats()
     }
   }
@@ -184,14 +185,14 @@ onAppEvent(({ type }) => {
       <template v-if="isAuthenticated">
         <div class="max-w-[300px] text-center grid gap-4 mx-auto md:mx-0">
           <Button
-            :loading="approvalPending"
-            :disabled="approvalPending || !isAuthenticated || isAuthenticating"
-            @click="allowanceState.allowance === 0 ? setApprove(1000) : setApprove(0)"
+            :loading="VapprovalPending"
+            :disabled="VapprovalPending || !isAuthenticated || isAuthenticating"
+            @click="approvalState.approval === 0 ? setApprove(1000) : setApprove(0)"
           >
-            {{ allowanceState.allowance === 0 ? 'Approve' : 'Revoke' }} ${{ allowanceState.symbol }} spending
+            {{ approvalState.approval === 0 ? 'Approve' : 'Revoke' }} ${{ approvalState.symbol }} spending
           </Button>
           <Button
-            :disabled="!allowanceState.allowance"
+            :disabled="!approvalState.approval"
             @click="vote1Egg()"
           >
             Vote 1 $EGG for every candidate
@@ -255,7 +256,7 @@ onAppEvent(({ type }) => {
         v-for="candidate in candidateIds"
         :key="candidate.id"
         :candidate="candidate"
-        :allowance="allowanceState"
+        :approval="approvalState"
         @load="onCandidateLoad"
       />
     </div>

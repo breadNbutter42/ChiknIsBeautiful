@@ -15,8 +15,7 @@ export default (address) => {
   const VclaimPremint = async () => await contract.claimPremint()
   //0 vars; Write
 
-  const VsetApprovalForAllALLOW = async () => await contract.setApprovalForAll(VITE_CONTRACT_THIRD, true)
-  const VsetApprovalForAllREVOKE = async () => await contract.setApprovalForAll(VITE_CONTRACT_THIRD, false)
+  const VsetApprovalForAll = async (_bool) => await contract.setApprovalForAll(VITE_CONTRACT_THIRD, _bool)
 
   //2 vars input: operator, bool; Write
 
@@ -66,8 +65,7 @@ export default (address) => {
   return {//repeat the function names here again
     contract,
     VclaimPremint,
-    VsetApprovalForAllALLOW,
-    VsetApprovalForAllREVOKE,
+    VsetApprovalForAll,
     VamountMintedDuringPremint,
     VamountMintedByDevs,
     VamountMintedDuringPublicSale,
