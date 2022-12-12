@@ -29,9 +29,9 @@ const { VsetApprovalForAll, Vname, Vsymbol, VbalanceOf, VgetOwnershipDataVIAL, V
 //same here, plus check all tokens owned, for use in our drop down menu https://joepegs.dev/api#tag/Users/operation/get_user_items_v2_users__address__items_get
 
 
-const VloadApprovalState = async () => {
+const loadVApprovalState = async () => {
   try {
-    const [ _Vsymbol, _Vapproval] = await Promise.all([Vsymbol(), VloadUserApproval()])
+    const [ _Vsymbol, _Vapproval] = await Promise.all([Vsymbol(), loadUserVApproval()])
 
     return Promise.resolve({
       Vsymbol: _Vsymbol,
@@ -46,14 +46,14 @@ const VloadApprovalState = async () => {
   }
 }
 
-const VloadUserApproval = async () => {
+const loadUserVApproval = async () => {
   if (!isApproved.value) return false
 
   const _Vapproval = await VisApprovedForAll()
   return Promise.resolve(_Vapproval)
 }
 
-const { state: approvalState, execute: loadApproval } = useAsyncState(() => loadApprovalState(), {}, { resetOnExecute: false })
+const { state: VapprovalState, execute: loadVApproval } = useAsyncState(() => loadVApprovalState(), {}, { resetOnExecute: false })
 
 const loadThirdContractState = async () => {
   try {
@@ -97,7 +97,7 @@ const setVApprovalForAll = async (_VapprovalBool) => {
     notify({
       type: 'success',
       title: 'Vials Approval',
-      text: `${_VapprovalBool === false ? 'Revoked' : 'Approved'} $${approvalState.value.symbol} Vials (Approval For All)`
+      text: `${_VapprovalBool === false ? 'Revoked' : 'Approved'} $${VapprovalState.value.symbol} Vials (Approval For All)`
     })
     emitAppEvent({ type: 'VtokensChanged' })
 
@@ -105,7 +105,7 @@ const setVApprovalForAll = async (_VapprovalBool) => {
   } catch (error) {
     notify({
       type: 'error',
-      title: 'Approval',
+      title: 'VApproval',
       text: error.reason ?? error.message
     })
   } finally {
@@ -124,18 +124,19 @@ const onCandidateLoad = (candidate) => {
 }
 
 const candidatesSorted = computed(() => candidates.value.sort((a, b) => b.votes - a.votes))
-
-const [leaderboard, toggleLeaderboard] = useToggle(false)
 */
+
+const [ChadChecker, toggleChadChecker] = useToggle(false)
+
 
 onAppEvent(({ type }) => {
   const events = {
     'accountsChanged': () => {
-      loadApproval()
+      loadVApproval()
       loadStats()
     },
     'VtokensChanged': () => {
-      loadApproval()
+      loadVApproval()
       loadStats()
     }
   }
@@ -162,12 +163,12 @@ onAppEvent(({ type }) => {
           <Button
             :loading="VapprovalPending"
             :disabled="VapprovalPending || !isAuthenticated || isAuthenticating"
-            @click="approvalState.approval === 0 ? setApprove(true) : setApprove(false)"
+            @click="VapprovalState.Vapproval === false ? setApprove(true) : setApprove(false)"
           >
-            {{ approvalState.approval === 0 ? 'Approve' : 'Revoke' }} ${{ approvalState.symbol }} spending
+            {{ VapprovalState.Vapproval === false ? 'Approve' : 'Revoke' }} ${{ VapprovalState.symbol }} burning
           </Button>
-          <Button @click="toggleLeaderboard()">
-            Open leaderboard
+          <Button @click="toggleChadChecker()">
+            ChadChecker
           </Button>
         </div>
       </template>
@@ -178,38 +179,38 @@ onAppEvent(({ type }) => {
             :disabled="isAuthenticating"
             @click="login()"
           >
-            Connect to vote
+            Connect to upgrade
           </Button>
-          <Button @click="toggleLeaderboard()">
-            Open leaderboard
+          <Button @click="toggleChadChecker()">
+            Open ChadChecker
           </Button>
         </div>
       </template>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">You voted</div>
-        <div class="font-bold">{{ state.addressVotes }}</div>
+        <div class="text-xs font-celaraz">Total Vials Burned</div>
+        <div class="font-bold">{{ state.vialsBurned }} / 2185</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">All votes cast</div>
-        <div class="font-bold">{{ state.votes }}</div>
+        <div class="text-xs font-celaraz">Type N Vials Burned</div>
+        <div class="font-bold">{{ state.nVialsBurned }} / 2179</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">Hours left</div>
-        <div class="font-bold">{{ state.timestamp }}</div>
+        <div class="text-xs font-celaraz">Total Vials Burned</div>
+        <div class="font-bold">{{ state.fVialsBurned }} / 6</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">$EGG balance</div>
-        <div class="font-bold">{{ state.balance }} $EGG</div>
+        <div class="text-xs font-celaraz">Chads Owned</div>
+        <div class="font-bold">{{ state.Cbalance }} </div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">Prize wallet</div>
-        <div class="font-bold">{{ Number(state.prize).toFixed(0) }} $EGG</div>
+        <div class="text-xs font-celaraz">Vials Owned</div>
+        <div class="font-bold">{{ state.Vbalance }}</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">Total $EGG burnt</div>
-        <div class="font-bold">{{ Number(state.burned).toFixed(0) }} $EGG</div>
+        <div class="text-xs font-celaraz">Supers Owned</div>
+        <div class="font-bold">{{ state.Sbalance }}</div>
       </div>
     </div>
     <div class="mt-4 text-xs text-center flex flex-wrap gap-2 md:gap-6 italic">
@@ -225,12 +226,12 @@ onAppEvent(({ type }) => {
         v-for="candidate in candidateIds"
         :key="candidate.id"
         :candidate="candidate"
-        :approval="approvalState"
+        :Vapproval="VapprovalState"
         @load="onCandidateLoad"
       />
     </div>
     <Transition name="fade">
-      <Leaderboard v-if="leaderboard" :scores="candidatesSorted" @close="toggleLeaderboard()" />
+      <ChadChecker v-if="ChadChecker" :scores="candidatesSorted" @close="toggleChadChecker()" />
     </Transition>
   </div>
 </template>
