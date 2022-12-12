@@ -1,9 +1,15 @@
 import useThirdContract from './useThirdContract'
-import useFlatpegContract from './useFlatpegContract'
+import useChadsContract from './useChadsContract'
+import useVialsContract from './useVialsContract'
+import useSupersContract from './useSupersContract'
+import useUpgradesContract from './useUpgradesContract'
 import useUser from './useUser'
 
 export {
   useThirdContract,
-  useFlatpegContract,
+  useChadsContract,
+  useVialsContract,
+  useSupersContract,
+  useUpgradesContract,
   useUser,
 }
