@@ -6,10 +6,10 @@ import useUserStore from '@/stores/user'
 export default (address) => {
   const { wallet, isAuthenticated } = useUser()
   const userStore = useUserStore()
-  const { VITE_CONTRACT_FLATPEG, VITE_CONTRACT_THIRD } = import.meta.env
+  const { VITE_CONTRACT_UPGRADES, VITE_CONTRACT_THIRD } = import.meta.env
 
   let contract
-  const setContract = (payload) => contract = new ethers.Contract(VITE_CONTRACT_FLATPEG, abi, payload)
+  const setContract = (payload) => contract = new ethers.Contract(VITE_CONTRACT_UPGRADES, abi, payload)
 
  
 

@@ -11,10 +11,6 @@ const socials = [
   {
     icon: IconDiscord,
     href: 'https://discord.gg/6VJJcYrawz'
-  },
-  {
-    icon: IconTwitter,
-    href: 'https://twitter.com/ChadNewsNetwork'
   }
 ]
 </script>
