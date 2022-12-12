@@ -1,52 +1,71 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAsyncState, useEventBus, useToggle } from '@vueuse/core'
-import { useEggContract, useUser, useVotingContract } from '@/composables'
+import { useChadsContract, useSupersContract, useVialsContract, useUpgradesContract, useUser, useThirdContract } from '@/composables'
 import { notify } from 'notiwind'
-import { candidateIds, randomize } from '@/utils'
-
-const candidates = ref(randomize(candidateIds))
 
 const { on: onAppEvent, emit: emitAppEvent } = useEventBus('app')
 const { address, isAuthenticated, isAuthenticating, login } = useUser()
-const { symbol, allowance, approve, balanceOf } = useEggContract(address)
-const { voteOneEggForEachCandidate, prizeMoneyTotalWei, eggBurntTotalWei, allVotesTotalBase, totalVotesFromVoterAddress, votingTimeLeftBlockTimestampHours } = useVotingContract(address)
 
-const loadAllowanceState = async () => {
+const { SbalanceOf, Sname, Ssymbol, } = useSupersContract(address)
+//could display total Supers owned
+
+const { CbalanceOf, Cname, Csymbol } = useChadsContract(address)
+//could display total Chads owned
+
+const { upgradeChad, fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, preminted, vialToF, chadToMinted } = useThirdContract(address)
+//upgradeChad gets a button far right
+//fVialsSet, chadToMinted dummy checks. 
+//if VialToF = true, vials is type F, else type N
+//fVialsBurned, nVialsBurned, vialsBurned     
+//can do double display like N Vials Burned 12/2494
+//preminted = totalVials; 6 = totalVialsF; (preminted-6) = totalVialsN
+
+const { VsetApprovalForAll, Vname, Vsymbol, VbalanceOf, VgetOwnershipDataVIAL, VisApprovedForAll } = useVialsContract(address)
+//VsetApprovalForAll for approval button two modes. VisApprovedForAll double checks approval
+// Vname, Vsymbol to display info
+// VbalanceOf, VgetOwnershipDataVIAL, could use to check ownership or use joepegs api, display total owned
+//joepegs api can get images of individual Chads and Vials from 'metadata' https://joepegs.dev/api#tag/Collections/operation/get_item_v2_collections__collection_address__tokens__token_id__get
+//same here, plus check all tokens owned, for use in our drop down menu https://joepegs.dev/api#tag/Users/operation/get_user_items_v2_users__address__items_get
+
+
+const loadVApprovalState = async () => {
   try {
-    const [ _symbol, _allowance] = await Promise.all([symbol(), loadUserAllowance()])
+    const [ _Vsymbol, _Vapproval] = await Promise.all([Vsymbol(), loadUserVApproval()])
 
     return Promise.resolve({
-      symbol: _symbol,
-      allowance: _allowance
+      Vsymbol: _Vsymbol,
+      Vapproval: _Vapproval
     })
   } catch (error) {
     notify({
       type: 'error',
-      title: 'Allowance State',
+      title: 'Vials Approval State',
       text: error.reason ?? error.message
     })
   }
 }
 
-const loadUserAllowance = async () => {
-  if (!isAuthenticated.value) return 0
+const loadUserVApproval = async () => {
+  if (!isApproved.value) return false
 
-  const _allowance = await allowance()
-  return Promise.resolve(_allowance)
+  const _Vapproval = await VisApprovedForAll()
+  return Promise.resolve(_Vapproval)
 }
 
-const { state: allowanceState, execute: loadAllowance } = useAsyncState(() => loadAllowanceState(), {}, { resetOnExecute: false })
+const { state: VapprovalState, execute: loadVApproval } = useAsyncState(() => loadVApprovalState(), {}, { resetOnExecute: false })
 
-const loadContractState = async () => {
+const loadThirdContractState = async () => {
   try {
-    const [burned, votes, prize, timestamp, user] = await Promise.all([eggBurntTotalWei(), allVotesTotalBase(), prizeMoneyTotalWei(), votingTimeLeftBlockTimestampHours(), loadUserState()])
+    const [fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, preminted, vialToF, user] = await Promise.all([fVialsBurned(), nVialsBurned(), vialsBurned(), fVialsSet(), preminted(), vialToF(), loadUserState])
 
     return Promise.resolve({
-      burned,
-      votes,
-      prize,
-      timestamp,
+      fVialsBurned, 
+      nVialsBurned, 
+      vialsBurned, 
+      fVialsSet, 
+      preminted, 
+      vialToF,
       ...user
     })
   } catch (error) {
@@ -55,71 +74,47 @@ const loadContractState = async () => {
 }
 
 const loadUserState = async () => {
-  if (!isAuthenticated.value) return Promise.resolve({ balance: 0, addressVotes: 0 })
+  if (!isAuthenticated.value) return Promise.resolve({ Cbalance: 0, Vbalance: 0, Sbalance: 0 })
   try {
-    const [balance, addressVotes] = await Promise.all([balanceOf(), totalVotesFromVoterAddress()])
+    const [Cbalance, Vbalance, Sbalance] = await Promise.all([CbalanceOf(), VbalanceOf(), SbalanceOf()])
 
-    return Promise.resolve({ balance, addressVotes })
+    return Promise.resolve({ Cbalance, Vbalance, Sbalance })
   } catch (error) {
     console.log(error)
   }
 }
 
-const { state, execute: loadStats } = useAsyncState(() => loadContractState(), {}, { resetOnExecute: false })
+const { state, execute: loadStats } = useAsyncState(() => loadThirdContractState(), {}, { resetOnExecute: false })
 
 
-const approvalPending = ref(false)
-const setApprove = async (_count) => {
-  approvalPending.value = true
+const VapprovalPending = ref(false)
+const setVApprovalForAll = async (_VapprovalBool) => {
+  VapprovalPending.value = true
   try {
-    const tx = await approve(_count)
+    const tx = await Vapprove(_VapprovalBool)
     const receipt = await tx.wait()
 
     notify({
       type: 'success',
-      title: 'Allowance',
-      text: `${_count === 0 ? 'Revoked' : 'Approved'} $${allowanceState.value.symbol} allowance`
+      title: 'Vials Approval',
+      text: `${_VapprovalBool === false ? 'Revoked' : 'Approved'} $${VapprovalState.value.symbol} Vials (Approval For All)`
     })
-    emitAppEvent({ type: 'tokensChanged' })
+    emitAppEvent({ type: 'VtokensChanged' })
 
     return Promise.resolve(receipt)
   } catch (error) {
     notify({
       type: 'error',
-      title: 'Allowance',
+      title: 'VApproval',
       text: error.reason ?? error.message
     })
   } finally {
-    approvalPending.value = false
+    VapprovalPending.value = false
   }
 }
 
-const votePending = ref(false)
-const vote1Egg = async () => {
-  votePending.value = true
-  try {
-    const tx = await voteOneEggForEachCandidate()
-    const receipt = await tx.wait()
 
-    notify({
-      type: 'success',
-      title: 'Voting',
-      text: `Voted 1 $EGG for each candidate`
-    })
-    emitAppEvent({ type: 'tokensChanged' })
-
-    return Promise.resolve(receipt)
-  } catch (error) {
-    notify({
-      type: 'error',
-      title: 'Voting',
-      text: error.reason ?? error.message
-    })
-  } finally {
-    votePending.value = false
-  }
-}
-
+/*
 const onCandidateLoad = (candidate) => {
   const index = candidates.value.findIndex(t => t.token === candidate.token)
   candidates.value[index] = {
@@ -129,17 +124,19 @@ const onCandidateLoad = (candidate) => {
 }
 
 const candidatesSorted = computed(() => candidates.value.sort((a, b) => b.votes - a.votes))
+*/
 
-const [leaderboard, toggleLeaderboard] = useToggle(false)
+const [ChadChecker, toggleChadChecker] = useToggle(false)
+
 
 onAppEvent(({ type }) => {
   const events = {
     'accountsChanged': () => {
-      loadAllowance()
+      loadVApproval()
       loadStats()
     },
-    'tokensChanged': () => {
-      loadAllowance()
+    'VtokensChanged': () => {
+      loadVApproval()
       loadStats()
     }
   }
@@ -148,6 +145,10 @@ onAppEvent(({ type }) => {
 })
 </script>
 
+
+
+
+
 <template>
   <div class="self-center w-full py-12 px-2 max-w-[1400px] mx-auto px-4">
     <div class="flex flex-wrap justify-between items-center">
@@ -155,31 +156,19 @@ onAppEvent(({ type }) => {
         <div class="font-black text-5xl text-blue-300">
           THE LAB
         </div>
-        <div class="text-2xl text-blue-300">
-          Burn vials
-        </div>
-        <div class="mt-2 mb-8 text-xs text-blue-200">
-          Mint Supers
-        </div>
       </div>
       
       <template v-if="isAuthenticated">
         <div class="max-w-[300px] text-center grid gap-4 mx-auto md:mx-0">
           <Button
-            :loading="approvalPending"
-            :disabled="approvalPending || !isAuthenticated || isAuthenticating"
-            @click="allowanceState.allowance === 0 ? setApprove(1000) : setApprove(0)"
+            :loading="VapprovalPending"
+            :disabled="VapprovalPending || !isAuthenticated || isAuthenticating"
+            @click="VapprovalState.Vapproval === false ? setApprove(true) : setApprove(false)"
           >
-            {{ allowanceState.allowance === 0 ? 'Approve' : 'Revoke' }} ${{ allowanceState.symbol }} spending
+            {{ VapprovalState.Vapproval === false ? 'Approve' : 'Revoke' }} ${{ VapprovalState.symbol }} burning
           </Button>
-          <Button
-            :disabled="!allowanceState.allowance"
-            @click="vote1Egg()"
-          >
-            Vote 1 $EGG for every candidate
-          </Button>
-          <Button @click="toggleLeaderboard()">
-            Open leaderboard
+          <Button @click="toggleChadChecker()">
+            ChadChecker
           </Button>
         </div>
       </template>
@@ -190,59 +179,50 @@ onAppEvent(({ type }) => {
             :disabled="isAuthenticating"
             @click="login()"
           >
-            Connect to vote
+            Connect to upgrade
           </Button>
-          <Button @click="toggleLeaderboard()">
-            Open leaderboard
+          <Button @click="toggleChadChecker()">
+            Open ChadChecker
           </Button>
         </div>
       </template>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">You voted</div>
-        <div class="font-bold">{{ state.addressVotes }}</div>
+        <div class="text-xs font-celaraz">All Vials Burned</div>
+        <div class="font-bold">{{ state.vialsBurned }} / 2185 Burned</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">All votes cast</div>
-        <div class="font-bold">{{ state.votes }}</div>
+        <div class="text-xs font-celaraz">N Vials Burned</div>
+        <div class="font-bold">{{ state.nVialsBurned }} / 2179 Type-N</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">Hours left</div>
-        <div class="font-bold">{{ state.timestamp }}</div>
+        <div class="text-xs font-celaraz">F Vials Burned</div>
+        <div class="font-bold">{{ state.fVialsBurned }} / 6 Type-F</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">$EGG balance</div>
-        <div class="font-bold">{{ state.balance }} $EGG</div>
+        <div class="text-xs font-celaraz">Chads Owned</div>
+        <div class="font-bold">{{ state.Cbalance }} CHADS</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">Prize wallet</div>
-        <div class="font-bold">{{ Number(state.prize).toFixed(0) }} $EGG</div>
+        <div class="text-xs font-celaraz">Vials Owned</div>
+        <div class="font-bold">{{ state.Vbalance }} VIALS</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">Total $EGG burnt</div>
-        <div class="font-bold">{{ Number(state.burned).toFixed(0) }} $EGG</div>
+        <div class="text-xs font-celaraz">Supers Owned</div>
+        <div class="font-bold">{{ state.Sbalance }} SUPERS</div>
       </div>
     </div>
     <div class="mt-4 text-xs text-center flex flex-wrap gap-2 md:gap-6 italic">
       <div class="text-blue-200">
-        One $EGG = One Vote
+        Check if Chad has been upgraded already with ChadChecker.
       </div>
       <div class="text-blue-200">
-        Top 10 Chikns with the most votes advance to the final round
+        Burn a vial to upgrade a Chad Doge and create a Super.
       </div>
     </div>
-    <div class="mt-2 grid md:grid-cols-2 xl:grid-cols-3 gap-2">
-      <Candidate 
-        v-for="candidate in candidateIds"
-        :key="candidate.id"
-        :candidate="candidate"
-        :allowance="allowanceState"
-        @load="onCandidateLoad"
-      />
-    </div>
     <Transition name="fade">
-      <Leaderboard v-if="leaderboard" :scores="candidatesSorted" @close="toggleLeaderboard()" />
+      <ChadChecker v-if="ChadChecker" :scores="candidatesSorted" @close="toggleChadChecker()" />
     </Transition>
   </div>
 </template>
