@@ -169,18 +169,16 @@ onAppEvent(({ type }) => {
 })
 </script>
 
+
+
+
+
 <template>
   <div class="self-center w-full py-12 px-2 max-w-[1400px] mx-auto px-4">
     <div class="flex flex-wrap justify-between items-center">
       <div class="text-center mx-auto md:mx-0 font-celaraz">
         <div class="font-black text-5xl text-blue-300">
-          Upgrade Chad Doge with DNA Vial to receive a 1:1 Supers
-        </div>
-        <div class="text-2xl text-blue-300">
-          Community $EGG Burn Vote
-        </div>
-        <div class="mt-2 mb-8 text-xs text-blue-200">
-          Voting Ended
+          THE LAB
         </div>
       </div>
       
