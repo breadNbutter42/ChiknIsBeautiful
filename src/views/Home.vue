@@ -158,6 +158,6 @@ onAppEvent(({ type }) => {
         </div>
       </div>
       
-      
+    </div>  
   </div>
 </template>
