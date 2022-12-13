@@ -71,25 +71,12 @@ export default (address) => {
   return {
     contract,
     upgradeChad,
-    upgradeSuper,
-    zeroAddress,
-    vialContract,
-    upgradeContract,
-    superContract,
-    chadContract,
     fVialsBurned,
     nVialsBurned,
     allVialsBurned,
     fVialsSet,
     preminted,
     vialToF,
-    supersToChad,
-    superTokenURI,
-    superToMinted,
-    chadToMinted,
-    chadToSupers,
-    getShuffledTokenIDSUPERS,
-    id2UpgradeArray,
-    superToUpgradeArray
+    chadToMinted
   }
 }

@@ -20,10 +20,10 @@ export default (address) => {
   //0 vars input; Read
 
     
-  const VbalanceOf = async (payload) => await contract.balanceOf(payload ?? address.value).then(response => Number(response))
+  const VbalanceOf = async (payload) => await contract.balanceOf(payload ?? address.value).then(response => String(response))
   //owner 
 
-  const VisApprovedForAll = async (payload) => await contract.isApprovedForAll(payload ?? address.value, VITE_CONTRACT_THIRD).then(response => Number(response))
+  const VisApprovedForAll = async (payload) => await contract.isApprovedForAll(payload ?? address.value, VITE_CONTRACT_THIRD).then(response => Boolean(response))
   //owner / operator : bool ; Read
 
 
