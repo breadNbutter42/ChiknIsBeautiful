@@ -31,11 +31,10 @@ const { VsetApprovalForAll, Vname, Vsymbol, VbalanceOf, VgetOwnershipDataVIAL, V
 
 const loadVApprovalState = async () => {
   try {
-    const [ _Vsymbol, _Vapproval] = await Promise.all([Vsymbol(), loadUserVApproval()])
+    const [ _Vsymbol] = await Promise.all([Vsymbol()])
 
     return Promise.resolve({
-      Vsymbol: _Vsymbol,
-      Vapproval: _Vapproval
+      Vsymbol: _Vsymbol
     })
   } catch (error) {
     notify({
@@ -190,7 +189,7 @@ onAppEvent(({ type }) => {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">All Vials Burned</div>
-        <div class="font-bold"> {{  }} / 2185 Burned</div>
+        <div class="font-bold">  / 2185 Burned</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">N Vials Burned</div>
@@ -222,7 +221,7 @@ onAppEvent(({ type }) => {
       </div>
     </div>
     <!---tests fine up to here if remove below-->
-    <!---don't remove below for tests-->
+    <!---don't remove below for tests       {{ Number(state.allVialsBurned).toFixed(0) }}   -->
 
     <Transition name="fade">
       <ChadChecker v-if="ChadChecker" :scores="candidatesSorted" @close="toggleChadChecker()" />
