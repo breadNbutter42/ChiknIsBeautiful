@@ -57,7 +57,7 @@ const { state: VapprovalState, execute: loadVApproval } = useAsyncState(() => lo
 
 const loadThirdContractState = async () => {
   try {
-    const [fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, preminted, vialToF, user] = await Promise.all([fVialsBurned(), nVialsBurned(), allVialsBurned(), fVialsSet(), preminted(), vialToF(), loadUserState])
+    const [fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, preminted, vialToF, user] = await Promise.all([fVialsBurned(), nVialsBurned(), vialsBurned(), fVialsSet(), preminted(), vialToF(), loadUserState])
 
     return Promise.resolve({
       fVialsBurned, 
