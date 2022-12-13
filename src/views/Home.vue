@@ -33,10 +33,11 @@ const { VsetApprovalForAll, Vsymbol, VbalanceOf, VisApprovedForAll } = useVialsC
 
 const loadVApprovalState = async () => {
   try {
-    const [ _Vsymbol] = await Promise.all([Vsymbol()])
+    const [ _Vsymbol, _Vapproval] = await Promise.all([Vsymbol(), loadUserVApproval()])
 
     return Promise.resolve({
-      Vsymbol: _Vsymbol
+      Vsymbol: _Vsymbol,
+      Vapproval: _Vapproval
     })
   } catch (error) {
     notify({
@@ -193,7 +194,7 @@ onAppEvent(({ type }) => {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">All Vials Burned</div>
-        <div class="font-bold"> {{ state.allVialsBurned }} / 2185 Burned</div>
+        <div class="font-bold">  / 2185 Burned</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">N Vials Burned</div>
@@ -205,7 +206,7 @@ onAppEvent(({ type }) => {
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Chads Owned</div>
-        <div class="font-bold"> CHADS</div>
+        <div class="font-bold"> {{ state.Cbalance }}CHADS</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Vials Owned</div>
@@ -225,7 +226,7 @@ onAppEvent(({ type }) => {
       </div>
     </div>
     <!---tests fine up to here if remove below-->
-    <!---don't remove below for tests       {{ Number(state.allVialsBurned).toFixed(0) }}   -->
+    <!---don't remove below for tests          -->
 
     <Transition name="fade">
       <ChadChecker v-if="ChadChecker" :scores="candidatesSorted" @close="toggleChadChecker()" />
