@@ -188,12 +188,42 @@ onAppEvent(({ type }) => {
     </div>
     <!---tests fine up to here if remove blow-->
 
-    
-
-
-
-
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
+      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
+        <div class="text-xs font-celaraz">All Vials Burned</div>
+        <div class="font-bold"> / 2185 Burned</div>
+      </div>
+      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
+        <div class="text-xs font-celaraz">N Vials Burned</div>
+        <div class="font-bold"> / 2179 Type-N</div>
+      </div>
+      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
+        <div class="text-xs font-celaraz">F Vials Burned</div>
+        <div class="font-bold"> / 6 Type-F</div>
+      </div>
+      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
+        <div class="text-xs font-celaraz">Chads Owned</div>
+        <div class="font-bold"> CHADS</div>
+      </div>
+      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
+        <div class="text-xs font-celaraz">Vials Owned</div>
+        <div class="font-bold"> VIALS</div>
+      </div>
+      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
+        <div class="text-xs font-celaraz">Supers Owned</div>
+        <div class="font-bold"> SUPERS</div>
+      </div>
+    </div>
+    <div class="mt-4 text-xs text-center flex flex-wrap gap-2 md:gap-6 italic">
+      <div class="text-blue-200">
+        Check if Chad has been upgraded already with ChadChecker.
+      </div>
+      <div class="text-blue-200">
+        Burn a vial to upgrade a Chad Doge and create a Super.
+      </div>
+    </div>
     <!---don't remove below for tests-->
+
     <Transition name="fade">
       <ChadChecker v-if="ChadChecker" :scores="candidatesSorted" @close="toggleChadChecker()" />
     </Transition>
