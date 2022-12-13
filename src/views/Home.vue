@@ -157,7 +157,38 @@ onAppEvent(({ type }) => {
           THE LAB
         </div>
       </div>
-      
-    </div>  
+      <template v-if="isAuthenticated">
+        <div class="max-w-[300px] text-center grid gap-4 mx-auto md:mx-0">
+          <Button
+            :loading="VapprovalPending"
+            :disabled="VapprovalPending || !isAuthenticated || isAuthenticating"
+            @click="VapprovalState.Vapproval === false ? setApprove(true) : setApprove(false)"
+          >
+            {{ VapprovalState.Vapproval === false ? 'Approve' : 'Revoke' }} ${{ VapprovalState.symbol }} burning
+          </Button>
+          <Button @click="toggleChadChecker()">
+            ChadChecker
+          </Button>
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="max-w-[300px] grid gap-4 text-center mx-auto md:mx-0">
+          <Button
+            :loading="isAuthenticating"
+            :disabled="isAuthenticating"
+            @click="login()"
+          >
+            Connect to upgrade
+          </Button>
+          <Button @click="toggleChadChecker()">
+            Open ChadChecker
+          </Button>
+        </div>
+      </template>
+    </div>
+                <!---tests fine up to here if remove blow-->
+
+    
   </div>
 </template>
