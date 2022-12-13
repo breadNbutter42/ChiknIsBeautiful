@@ -23,10 +23,9 @@ const { upgradeChad, fVialsBurned, nVialsBurned, allVialsBurned, fVialsSet, prem
 //can do double display like N Vials Burned 12/2494
 //preminted = totalVials; 6 = totalVialsF; (preminted-6) = totalVialsN
 
-const { VsetApprovalForAll, Vsymbol, VbalanceOf, VisApprovedForAll } = useVialsContract(address)
 //VsetApprovalForAll for approval button two modes. VisApprovedForAll double checks approval
-// Vname, Vsymbol to display info
-// VbalanceOf, VgetOwnershipDataVIAL, could use to check ownership or use joepegs api, display total owned
+// Vsymbol to display info
+// VbalanceOf could use to check ownership and also use joepegs api, display total owned
 //joepegs api can get images of individual Chads and Vials from 'metadata' https://joepegs.dev/api#tag/Collections/operation/get_item_v2_collections__collection_address__tokens__token_id__get
 //same here, plus check all tokens owned, for use in our drop down menu https://joepegs.dev/api#tag/Users/operation/get_user_items_v2_users__address__items_get
 
