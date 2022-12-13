@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { useAsyncState, useEventBus, useToggle } from '@vueuse/core'
+import { toRefs, ref, computed } from 'vue'
+import { useAsyncState, useEventBus, useToggle, useFetch } from '@vueuse/core'
 import { useChadsContract, useSupersContract, useVialsContract, useUser, useThirdContract } from '@/composables'
 import { notify } from 'notiwind'
 import { candidateIds, randomize } from '@/utils'
@@ -76,7 +76,7 @@ const loadThirdContractState = async () => {
 const loadUserState = async () => {
   if (!isAuthenticated.value) return Promise.resolve({ Cbalance: 0, Vbalance: 0, Sbalance: 0 })
   try {
-    const [Cbalance, Vbalance, Sbalance] = await Promise.all([CbalanceOf(), VbalanceOf(), SbalanceOf()])
+    const [Cbalance, Vbalance, Sbalance] = await Promise.all([CbalanceOf(address), VbalanceOf(address), SbalanceOf(address)])
 
     return Promise.resolve({ Cbalance, Vbalance, Sbalance })
   } catch (error) {
@@ -166,6 +166,50 @@ onAppEvent(({ type }) => {
   
   events[type]?.() ?? null
 })
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//pull in stuff from Candidate
+const isImageLoaded = ref(false)//we prepare to fetch data w async so we start with false state defined for isExampleLoaded
+
+const emit = defineEmits(['load'])//emit the message that we are loading the page
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 </script>
 
 
@@ -196,17 +240,17 @@ onAppEvent(({ type }) => {
             :disabled="VapprovalPending || !isAuthenticated || isAuthenticating"
             @click="VapprovalState.Vapproval === false ? setVApprovalForAll(true) : setVApprovalForAll(false)"
           >
-            {{ VapprovalState.Vapproval === false ? 'Approve' : 'Revoke' }} ${{ VapprovalState.symbol }} burning
+            {{ VapprovalState.Vapproval === false ? 'Approve' : 'Revoke' }} All ${{ VapprovalState.Vsymbol }}
           </Button>
-          <!---<Button
+          <Button
             :disabled="!VapprovalState.Vapproval"
             @click="upgradeTheChad()"
           >
             ENTER WITH CAUTION
-          </Button> -->
-          <!---<Button @click="toggleChadChecker()">
+          </Button>
+          <Button @click="toggleChadChecker()">
             ChadChecker
-          </Button> -->
+          </Button>
         </div>
       </template>
       <template v-else>
@@ -228,27 +272,27 @@ onAppEvent(({ type }) => {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">All Vials Burned</div>
-        <div class="font-bold">  / 2185 Burned</div>
+        <div class="font-bold"> {{state.allVialsBurned}}  / 2185 Burned</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">N Vials Burned</div>
-        <div class="font-bold"> / 2179 Type-N</div>
+        <div class="font-bold"> {{state.nVialsBurned}}/ 2179 Type-N</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">F Vials Burned</div>
-        <div class="font-bold"> / 6 Type-F</div>
+        <div class="font-bold"> {{state.fVialsBurned}}/ 6 Type-F</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Chads Owned</div>
-        <div class="font-bold"> CHADS</div>
+        <div class="font-bold"> {{state.Cbalance}} CHADS</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Vials Owned</div>
-        <div class="font-bold"> VIALS</div>
+        <div class="font-bold"> {{state.Vbalance}} VIALS</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Supers Owned</div>
-        <div class="font-bold"> SUPERS</div>
+        <div class="font-bold"> {{state.Sbalance}} SUPERS</div>
       </div>
     </div>
     <div class="mt-4 text-xs text-center flex flex-wrap gap-2 md:gap-6 italic">
@@ -260,7 +304,7 @@ onAppEvent(({ type }) => {
       </div>
     </div>
     <!---tests fine up to here if remove below-->
-    <!---<div class="mt-2 grid md:grid-cols-2 xl:grid-cols-3 gap-2">
+    <div class="mt-2 grid md:grid-cols-2 xl:grid-cols-3 gap-2">
       <Candidate 
         v-for="candidate in candidateIds"
         :key="candidate.id"
@@ -268,7 +312,7 @@ onAppEvent(({ type }) => {
         :allowance="allowanceState"
         @load="onCandidateLoad"
       />
-    </div> -->
+    </div>
     <!---don't remove below for tests          -->
     <Transition name="fade">
       <ChadChecker v-if="ChadChecker" :scores="candidatesSorted" @close="toggleChadChecker()" />
