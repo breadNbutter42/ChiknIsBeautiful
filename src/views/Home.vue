@@ -206,7 +206,7 @@ onAppEvent(({ type }) => {
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Chads Owned</div>
-        <div class="font-bold"> {{ state.Cbalance }}CHADS</div>
+        <div class="font-bold"> CHADS</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Vials Owned</div>
