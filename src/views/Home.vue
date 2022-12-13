@@ -254,15 +254,7 @@ onAppEvent(({ type }) => {
       </div>
     </div>
     <!---tests fine up to here if remove below-->
-    <div class="mt-2 grid md:grid-cols-2 xl:grid-cols-3 gap-2">
-      <Candidate 
-        v-for="candidate in candidateIds"
-        :key="candidate.id"
-        :candidate="candidate"
-        :Vapproval="VapprovalState"
-        @load="onCandidateLoad"
-      />
-    </div>
+
     <!---don't remove below for tests          -->
     <Transition name="fade">
       <ChadChecker v-if="ChadChecker" :scores="candidatesSorted" @close="toggleChadChecker()" />
