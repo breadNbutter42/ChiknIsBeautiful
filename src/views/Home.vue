@@ -3,9 +3,9 @@ import { ref, computed } from 'vue'
 import { useAsyncState, useEventBus, useToggle } from '@vueuse/core'
 import { useChadsContract, useSupersContract, useVialsContract, useUser, useThirdContract } from '@/composables'
 import { notify } from 'notiwind'
-//
-//
-//
+import { candidateIds, randomize } from '@/utils'
+
+const candidates = ref(randomize(candidateIds))
 
 const { on: onAppEvent, emit: emitAppEvent } = useEventBus('app')
 const { address, isAuthenticated, isAuthenticating, login } = useUser()
@@ -91,13 +91,13 @@ const VapprovalPending = ref(false)
 const setVApprovalForAll = async (_VapprovalBool) => {
   VapprovalPending.value = true
   try {
-    const tx = await Vapprove(_VapprovalBool)
+    const tx = await VsetApprovalForAll(_VapprovalBool)
     const receipt = await tx.wait()
 
     notify({
       type: 'success',
       title: 'Vials Approval',
-      text: `${_VapprovalBool === false ? 'Revoked' : 'Approved'} $${VapprovalState.value.symbol} Vials (Approval For All)`
+      text: `${_VapprovalBool === false ? 'Revoked' : 'Approved'} $${VapprovalState.value.Vsymbol} Approval For All`
     })
     emitAppEvent({ type: 'VtokensChanged' })
 
@@ -139,6 +139,16 @@ const upgradeTheChad = async () => {
   }
 }
 
+const onCandidateLoad = (candidate) => {
+  const index = candidates.value.findIndex(t => t.token === candidate.token)
+  candidates.value[index] = {
+    ...candidates.value[index],
+    ...candidate
+  }
+}
+
+const candidatesSorted = computed(() => candidates.value.sort((a, b) => b.votes - a.votes))
+
 
 const [ChadChecker, toggleChadChecker] = useToggle(false)
 
@@ -169,6 +179,12 @@ onAppEvent(({ type }) => {
         <div class="font-black text-5xl text-blue-300">
           THE LAB
         </div>
+        <div class="text-2xl text-blue-300">
+          Burn a DNA VIAL
+        </div>
+        <div class="mt-2 mb-8 text-xs text-blue-200">
+          Upgrade a Chad Doge to get a Super
+        </div>
       </div>
 
 
@@ -178,7 +194,7 @@ onAppEvent(({ type }) => {
           <Button
             :loading="VapprovalPending"
             :disabled="VapprovalPending || !isAuthenticated || isAuthenticating"
-            @click="VapprovalState.Vapproval === false ? setApprove(true) : setApprove(false)"
+            @click="VapprovalState.Vapproval === false ? setVApprovalForAll(true) : setVApprovalForAll(false)"
           >
             {{ VapprovalState.Vapproval === false ? 'Approve' : 'Revoke' }} ${{ VapprovalState.symbol }} burning
           </Button>
@@ -244,7 +260,15 @@ onAppEvent(({ type }) => {
       </div>
     </div>
     <!---tests fine up to here if remove below-->
-
+    <div class="mt-2 grid md:grid-cols-2 xl:grid-cols-3 gap-2">
+      <Candidate 
+        v-for="candidate in candidateIds"
+        :key="candidate.id"
+        :candidate="candidate"
+        :allowance="allowanceState"
+        @load="onCandidateLoad"
+      />
+    </div>
     <!---don't remove below for tests          -->
     <Transition name="fade">
       <ChadChecker v-if="ChadChecker" :scores="candidatesSorted" @close="toggleChadChecker()" />

@@ -168,6 +168,10 @@ onAppEvent(({ type }) => {
 })
 </script>
 
+
+
+
+
 <template>
   <div class="self-center w-full py-12 px-2 max-w-[1400px] mx-auto px-4">
     <div class="flex flex-wrap justify-between items-center">
@@ -183,6 +187,8 @@ onAppEvent(({ type }) => {
         </div>
       </div>
       
+
+
       <template v-if="isAuthenticated">
         <div class="max-w-[300px] text-center grid gap-4 mx-auto md:mx-0">
           <Button
@@ -263,7 +269,7 @@ onAppEvent(({ type }) => {
         @load="onCandidateLoad"
       />
     </div>
-    
+
     <Transition name="fade">
       <Leaderboard v-if="leaderboard" :scores="candidatesSorted" @close="toggleLeaderboard()" />
     </Transition>
