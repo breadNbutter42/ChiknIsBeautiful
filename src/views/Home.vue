@@ -200,7 +200,7 @@ onAppEvent(({ type }) => {
           </Button>
           <Button
             :disabled="!VapprovalState.Vapproval"
-            @click="upgradeTheChad(1,1)"
+            @click="upgradeTheChad()"
           >
             ENTER WITH CAUTION
           </Button>
