@@ -171,6 +171,7 @@ onAppEvent(({ type }) => {
           </Button>
         </div>
       </template>
+            <!---tests fine up to here if remove blow-->
 
       <template v-else>
         <div class="max-w-[300px] grid gap-4 text-center mx-auto md:mx-0">
@@ -187,8 +188,6 @@ onAppEvent(({ type }) => {
         </div>
       </template>
     </div>
-    <!---tests fine up to here if remove blow-->
-
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">All Vials Burned</div>
