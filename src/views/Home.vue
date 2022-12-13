@@ -138,7 +138,7 @@ const upgradeChad = async () => {
     upgradePending.value = false
   }
 }
-/*
+
 const onCandidateLoad = (candidate) => {
   const index = candidates.value.findIndex(t => t.token === candidate.token)
   candidates.value[index] = {
@@ -148,7 +148,7 @@ const onCandidateLoad = (candidate) => {
 }
 
 const candidatesSorted = computed(() => candidates.value.sort((a, b) => b.votes - a.votes))
-*/
+
 
 const [ChadChecker, toggleChadChecker] = useToggle(false)
 
@@ -259,7 +259,7 @@ onAppEvent(({ type }) => {
         v-for="candidate in candidateIds"
         :key="candidate.id"
         :candidate="candidate"
-        :allowance="allowanceState"
+        :Vapproval="VapprovalState"
         @load="onCandidateLoad"
       />
     </div>
