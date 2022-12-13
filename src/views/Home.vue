@@ -13,7 +13,7 @@ const { SbalanceOf, Sname, Ssymbol, } = useSupersContract(userAddress)
 const { CbalanceOf, Cname, Csymbol } = useChadsContract(userAddress)
 //could display total Chads owned
 
-const { upgradeChad, fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, preminted, vialToF, chadToMinted } = useThirdContract(userAddress)
+const { upgradeChad, fVialsBurned, nVialsBurned, allVialsBurned, fVialsSet, preminted, vialToF, chadToMinted } = useThirdContract(userAddress)
 //upgradeChad gets a button far right
 //fVialsSet, chadToMinted dummy checks. 
 //if VialToF = true, vials is type F, else type N
@@ -190,7 +190,7 @@ onAppEvent(({ type }) => {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">All Vials Burned</div>
-        <div class="font-bold"> {{ Number(state.vialsBurned).toFixed(0) }} / 2185 Burned</div>
+        <div class="font-bold"> {{ Number(state.allVialsBurned).toFixed(0) }} / 2185 Burned</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">N Vials Burned</div>
