@@ -12,6 +12,23 @@ const { address, isAuthenticated, isAuthenticating, login } = useUser()
 const { symbol, allowance, approve, balanceOf } = useEggContract(address)
 const { voteOneEggForEachCandidate, prizeMoneyTotalWei, eggBurntTotalWei, allVotesTotalBase, totalVotesFromVoterAddress, votingTimeLeftBlockTimestampHours } = useVotingContract(address)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const loadAllowanceState = async () => {
   try {
     const [ _symbol, _allowance] = await Promise.all([symbol(), loadUserAllowance()])
@@ -53,6 +70,8 @@ const loadContractState = async () => {
     console.log(error)
   }
 }
+
+
 
 const loadUserState = async () => {
   if (!isAuthenticated.value) return Promise.resolve({ balance: 0, addressVotes: 0 })
@@ -130,6 +149,7 @@ const onCandidateLoad = (candidate) => {
 
 const candidatesSorted = computed(() => candidates.value.sort((a, b) => b.votes - a.votes))
 
+
 const [leaderboard, toggleLeaderboard] = useToggle(false)
 
 onAppEvent(({ type }) => {
@@ -198,6 +218,7 @@ onAppEvent(({ type }) => {
         </div>
       </template>
     </div>
+
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">You voted</div>
@@ -232,6 +253,7 @@ onAppEvent(({ type }) => {
         Top 10 Chikns with the most votes advance to the final round
       </div>
     </div>
+
     <div class="mt-2 grid md:grid-cols-2 xl:grid-cols-3 gap-2">
       <Candidate 
         v-for="candidate in candidateIds"
@@ -241,6 +263,7 @@ onAppEvent(({ type }) => {
         @load="onCandidateLoad"
       />
     </div>
+    
     <Transition name="fade">
       <Leaderboard v-if="leaderboard" :scores="candidatesSorted" @close="toggleLeaderboard()" />
     </Transition>

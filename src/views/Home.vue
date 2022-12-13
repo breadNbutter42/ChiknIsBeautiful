@@ -113,7 +113,31 @@ const setVApprovalForAll = async (_VapprovalBool) => {
   }
 }
 
+const upgradePending = ref(false)
+const upgradeChad = async () => {
+  upgradePending.value = true
+  try {
+    const tx = await upgradeChad()
+    const receipt = await tx.wait()
 
+    notify({
+      type: 'success',
+      title: 'Upgrading',
+      text: `Chad Upgraded: Burned Vial And Received Super`
+    })
+    emitAppEvent({ type: 'VtokensChanged' })
+
+    return Promise.resolve(receipt)
+  } catch (error) {
+    notify({
+      type: 'error',
+      title: 'Upgrading',
+      text: error.reason ?? error.message
+    })
+  } finally {
+    upgradePending.value = false
+  }
+}
 /*
 const onCandidateLoad = (candidate) => {
   const index = candidates.value.findIndex(t => t.token === candidate.token)
@@ -127,7 +151,6 @@ const candidatesSorted = computed(() => candidates.value.sort((a, b) => b.votes 
 */
 
 const [ChadChecker, toggleChadChecker] = useToggle(false)
-
 
 onAppEvent(({ type }) => {
   const events = {
@@ -159,6 +182,7 @@ onAppEvent(({ type }) => {
       </div>
 
 
+
       <template v-if="isAuthenticated">
         <div class="max-w-[300px] text-center grid gap-4 mx-auto md:mx-0">
           <Button
@@ -167,6 +191,12 @@ onAppEvent(({ type }) => {
             @click="VapprovalState.Vapproval === false ? setApprove(true) : setApprove(false)"
           >
             {{ VapprovalState.Vapproval === false ? 'Approve' : 'Revoke' }} ${{ VapprovalState.symbol }} burning
+          </Button>
+          <Button
+            :disabled="!VapprovalState.Vapproval"
+            @click="upgradeChad()"
+          >
+            ENTER WITH CAUTION
           </Button>
           <Button @click="toggleChadChecker()">
             ChadChecker
@@ -224,8 +254,16 @@ onAppEvent(({ type }) => {
       </div>
     </div>
     <!---tests fine up to here if remove below-->
+    <div class="mt-2 grid md:grid-cols-2 xl:grid-cols-3 gap-2">
+      <Candidate 
+        v-for="candidate in candidateIds"
+        :key="candidate.id"
+        :candidate="candidate"
+        :allowance="allowanceState"
+        @load="onCandidateLoad"
+      />
+    </div>
     <!---don't remove below for tests          -->
-
     <Transition name="fade">
       <ChadChecker v-if="ChadChecker" :scores="candidatesSorted" @close="toggleChadChecker()" />
     </Transition>
