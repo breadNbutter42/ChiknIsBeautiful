@@ -114,7 +114,7 @@ const setVApprovalForAll = async (_VapprovalBool) => {
 }
 
 const upgradePending = ref(false)
-const upgradeChad = async () => {
+const upgradeTheChad = async () => {
   upgradePending.value = true
   try {
     const tx = await upgradeChad()
@@ -194,7 +194,7 @@ onAppEvent(({ type }) => {
           </Button>
           <Button
             :disabled="!VapprovalState.Vapproval"
-            @click="upgradeChad()"
+            @click="upgradeTheChad()"
           >
             ENTER WITH CAUTION
           </Button>
