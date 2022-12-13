@@ -57,7 +57,7 @@ const { state: VapprovalState, execute: loadVApproval } = useAsyncState(() => lo
 
 const loadThirdContractState = async () => {
   try {
-    const [fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, preminted, vialToF, user] = await Promise.all([fVialsBurned(), nVialsBurned(), vialsBurned(), fVialsSet(), preminted(), vialToF(), loadUserState])
+    const [fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, preminted, vialToF, user] = await Promise.all([fVialsBurned(), nVialsBurned(), allVialsBurned(), fVialsSet(), preminted(), vialToF(), loadUserState])
 
     return Promise.resolve({
       fVialsBurned, 
@@ -190,7 +190,7 @@ onAppEvent(({ type }) => {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">All Vials Burned</div>
-        <div class="font-bold"> {{ state.allVialsBurned }} / 2185 Burned</div>
+        <div class="font-bold"> {{ Number(state.allVialsBurned).toFixed(0) }} / 2185 Burned</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">N Vials Burned</div>
