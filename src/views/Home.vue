@@ -210,7 +210,7 @@ onAppEvent(({ type }) => {
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Supers Owned</div>
-        <div class="font-bold">{{ state.Sbalance }} SUPERS</div>
+        <div class="font-bold"> SUPERS</div>
       </div>
     </div>
     <div class="mt-4 text-xs text-center flex flex-wrap gap-2 md:gap-6 italic">
