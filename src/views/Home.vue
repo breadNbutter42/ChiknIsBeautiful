@@ -200,7 +200,7 @@ onAppEvent(({ type }) => {
           </Button>
           <Button
             :disabled="!VapprovalState.Vapproval"
-            @click="upgradeTheChad(chadCandidate.chadID, vialCandidate.vialID)"
+            @click="upgradeTheChad(1,2)"
           >
             ENTER WITH CAUTION
           </Button>
@@ -228,7 +228,7 @@ onAppEvent(({ type }) => {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">All Vials Burned</div>
-        <div class="font-bold"> {{state.Cbalance}}  / 2185 Burned</div>
+        <div class="font-bold">  / 2185 Burned</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">N Vials Burned</div>
