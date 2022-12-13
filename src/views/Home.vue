@@ -139,16 +139,6 @@ const upgradeTheChad = async () => {
   }
 }
 
-const onCandidateLoad = (candidate) => {
-  const index = candidates.value.findIndex(t => t.token === candidate.token)
-  candidates.value[index] = {
-    ...candidates.value[index],
-    ...candidate
-  }
-}
-
-const candidatesSorted = computed(() => candidates.value.sort((a, b) => b.votes - a.votes))
-
 
 const [ChadChecker, toggleChadChecker] = useToggle(false)
 
