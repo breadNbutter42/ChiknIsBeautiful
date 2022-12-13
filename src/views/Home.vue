@@ -9,9 +9,7 @@ import { notify } from 'notiwind'
 
 const { on: onAppEvent, emit: emitAppEvent } = useEventBus('app')
 const { address, isAuthenticated, isAuthenticating, login } = useUser()
-const { SbalanceOf, Sname, Ssymbol } = useSupersContract(address)
-//could display total Supers owned
-
+const { SbalanceOf, Ssymbol } = useSupersContract(address)
 const { CbalanceOf, Csymbol } = useChadsContract(address)
 //could display total Chads owned
 
@@ -206,7 +204,7 @@ onAppEvent(({ type }) => {
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Chads Owned</div>
-        <div class="font-bold"> CHADS</div>
+        <div class="font-bold"> {{state.Csymbol}} CHADS</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Vials Owned</div>
