@@ -157,6 +157,7 @@ onAppEvent(({ type }) => {
           THE LAB
         </div>
       </div>
+      <!---tests fine up to here if remove blow-->
       <template v-if="isAuthenticated">
         <div class="max-w-[300px] text-center grid gap-4 mx-auto md:mx-0">
           <Button
@@ -171,8 +172,6 @@ onAppEvent(({ type }) => {
           </Button>
         </div>
       </template>
-            <!---tests fine up to here if remove blow-->
-
       <template v-else>
         <div class="max-w-[300px] grid gap-4 text-center mx-auto md:mx-0">
           <Button
