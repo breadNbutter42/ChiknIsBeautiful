@@ -1,19 +1,19 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAsyncState, useEventBus, useToggle } from '@vueuse/core'
-import { useChadsContract, useSupersContract, useVialsContract, useUpgradesContract, useUser, useThirdContract } from '@/composables'
+import { useChadsContract, useSupersContract, useVialsContract, useUser, useThirdContract } from '@/composables'
 import { notify } from 'notiwind'
 
 const { on: onAppEvent, emit: emitAppEvent } = useEventBus('app')
-const { address, isAuthenticated, isAuthenticating, login } = useUser()
+const { userAddress, isAuthenticated, isAuthenticating, login } = useUser()
 
-const { SbalanceOf, Sname, Ssymbol, } = useSupersContract(address)
+const { SbalanceOf, Sname, Ssymbol, } = useSupersContract(userAddress)
 //could display total Supers owned
 
-const { CbalanceOf, Cname, Csymbol } = useChadsContract(address)
+const { CbalanceOf, Cname, Csymbol } = useChadsContract(userAddress)
 //could display total Chads owned
 
-const { upgradeChad, fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, preminted, vialToF, chadToMinted } = useThirdContract(address)
+const { upgradeChad, fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, preminted, vialToF, chadToMinted } = useThirdContract(userAddress)
 //upgradeChad gets a button far right
 //fVialsSet, chadToMinted dummy checks. 
 //if VialToF = true, vials is type F, else type N
@@ -21,7 +21,7 @@ const { upgradeChad, fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, premint
 //can do double display like N Vials Burned 12/2494
 //preminted = totalVials; 6 = totalVialsF; (preminted-6) = totalVialsN
 
-const { VsetApprovalForAll, Vname, Vsymbol, VbalanceOf, VgetOwnershipDataVIAL, VisApprovedForAll } = useVialsContract(address)
+const { VsetApprovalForAll, Vname, Vsymbol, VbalanceOf, VgetOwnershipDataVIAL, VisApprovedForAll } = useVialsContract(userAddress)
 //VsetApprovalForAll for approval button two modes. VisApprovedForAll double checks approval
 // Vname, Vsymbol to display info
 // VbalanceOf, VgetOwnershipDataVIAL, could use to check ownership or use joepegs api, display total owned
@@ -190,7 +190,7 @@ onAppEvent(({ type }) => {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">All Vials Burned</div>
-        <div class="font-bold">{{ state.vialsBurned }} / 2185 Burned</div>
+        <div class="font-bold"> {{ state.userAddress }} / 2185 Burned</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">N Vials Burned</div>
