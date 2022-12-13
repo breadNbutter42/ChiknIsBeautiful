@@ -164,7 +164,7 @@ onAppEvent(({ type }) => {
             :disabled="VapprovalPending || !isAuthenticated || isAuthenticating"
             @click="VapprovalState.Vapproval === false ? setApprove(true) : setApprove(false)"
           >
-            {{ VapprovalState.Vapproval === false ? 'Approve' : 'Revoke' }} Vial{{ VapprovalState.symbol }} burning
+            {{ VapprovalState.Vapproval === false ? 'Approve' : 'Revoke' }} ${{ VapprovalState.symbol }} burning
           </Button>
           <Button @click="toggleChadChecker()">
             ChadChecker
