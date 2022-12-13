@@ -157,6 +157,7 @@ onAppEvent(({ type }) => {
           THE LAB
         </div>
       </div>
+<<<<<<< HEAD
       <!---tests fine up to here if remove blow-->
       <template v-if="isAuthenticated">
         <div class="max-w-[300px] text-center grid gap-4 mx-auto md:mx-0">
@@ -224,5 +225,9 @@ onAppEvent(({ type }) => {
     <Transition name="fade">
       <ChadChecker v-if="ChadChecker" :scores="candidatesSorted" @close="toggleChadChecker()" />
     </Transition>
+=======
+      
+    </div>  
+>>>>>>> parent of d2eeb9d (test home)
   </div>
 </template>
