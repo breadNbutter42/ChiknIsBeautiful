@@ -18,7 +18,7 @@ export default (address) => {
   //0 vars input; Read
 
     
-  const CbalanceOf = async (payload) => await contract.balanceOf(payload ?? address.value).then(response => String(response))
+  const CbalanceOf = async (payload) => await contract.balanceOf(payload ?? address.value).then(response => Number(response))
   //owner 
 
 

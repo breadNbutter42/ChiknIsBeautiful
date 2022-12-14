@@ -23,7 +23,7 @@ const { upgradeChad, fVialsBurned, nVialsBurned, vialsBurned, fVialsSet, premint
 
 const { VsetApprovalForAll, Vsymbol, VbalanceOf, VisApprovedForAll } = useVialsContract(address)
 //VsetApprovalForAll for approval button two modes. VisApprovedForAll double checks approval
-// Vsymbol to display info
+// symbol to display info
 // VbalanceOf could use to check ownership and also use joepegs api, display total owned
 //joepegs api can get images of individual Chads and Vials from 'metadata' https://joepegs.dev/api#tag/Collections/operation/get_item_v2_collections__collection_address__tokens__token_id__get
 //same here, plus check all tokens owned, for use in our drop down menu https://joepegs.dev/api#tag/Users/operation/get_user_items_v2_users__address__items_get
@@ -31,19 +31,16 @@ const { VsetApprovalForAll, Vsymbol, VbalanceOf, VisApprovedForAll } = useVialsC
 
 const loadVApprovalState = async () => {
   try {
-    const [ _Vbalances, _Vsymbol, _Vapproval, _Cbalances, _Csymbol, _Sbalances, _Ssymbol, _fVialsBurned, _nVialsBurned, _vialsBurned ] = await Promise.all([VbalanceOf(), Vsymbol(), loadUserVApproval(), CbalanceOf(), Csymbol(), SbalanceOf(), Ssymbol(), fVialsBurned(), nVialsBurned(), vialsBurned()])
+    const [ _Vbalances, _Vsymbol, _Cbalances, _Csymbol, _Sbalances, _Ssymbol, _Vapproval ] = await Promise.all([VbalanceOf(), Vsymbol(), CbalanceOf(), Csymbol(), SbalanceOf(), Ssymbol(), loadUserVApproval()])
 
     return Promise.resolve({
       Vbalances: _Vbalances,
       Vsymbol: _Vsymbol,
-      Vapproval: _Vapproval,
-      Cbalances: _Cbalances,
-      Csymbol: _Csymbol,
-      Sbalances: _Sbalances,
-      Ssymbol: _Ssymbol,
-      fVialsBurned: _fVialsBurned,
-      nVialsBurned: _nVialsBurned,
-      allVialsBurned: _vialsBurned
+      Cbalances: _Cbalances, 
+      Csymbol: _Csymbol, 
+      Sbalances: _Sbalances, 
+      Ssymbol: _Ssymbol, 
+      Vapproval: _Vapproval
     })
   } catch (error) {
     notify({
@@ -237,27 +234,27 @@ onAppEvent(({ type }) => {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">All Vials Burned</div>
-        <div class="font-bold">  {{ VapprovalState.allVialsBurned }} of 2185</div>
+        <div class="font-bold">  {{  }} / 2185 Burned</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">N Vials Burned</div>
-        <div class="font-bold"> {{ VapprovalState.fVialsBurned }} of 2179</div>
+        <div class="font-bold"> / 2179 Type-N</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">F Vials Burned</div>
-        <div class="font-bold"> {{ VapprovalState.fVialsBurned }} of 6 </div>
+        <div class="font-bold"> / 6 Type-F</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Chads Owned</div>
-        <div class="font-bold"> {{ VapprovalState.Cbalances }} </div>
+        <div class="font-bold"> {{ VapprovalState.Cbalances }} CHADS</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Vials Owned</div>
-        <div class="font-bold"> {{ VapprovalState.Vbalances }} </div>
+        <div class="font-bold"> {{ VapprovalState.Vbalances }} {{VapprovalState.Vsymbol }}</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Supers Owned</div>
-        <div class="font-bold"> {{ VapprovalState.Sbalances }} </div>
+        <div class="font-bold">  {{ VapprovalState.Vbalances }} SUPERS</div>
       </div>
     </div>
     <div class="mt-4 text-xs text-center flex flex-wrap gap-2 md:gap-6 italic">

@@ -36,7 +36,7 @@ export default (address) => {
   const amountMintedDuringPublicSale = async () => await contract.amountMintedDuringPublicSale().then(response => Number(response))
   const collectionSize = async () => await contract.collectionsSize().then(response => Number(response))
   const name = async () => await contract.name().then(response => String(response))
-  const symbol = async () => await contract.symbol().then(response => String(response))
+  const symbol = async () => await contract.symbol()
   const tokenURI = async () => await contract.tokenURI().then(response => String(response))
   const unrevealedURI = async () => await contract.unrevealedURI().then(response => String(response))
   const totalSupply = async () => await contract.totalSupply().then(response => Number(response))
