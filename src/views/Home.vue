@@ -104,8 +104,8 @@ const setVApprovalForAll = async (_VapprovalBool) => {
 
     notify({
       type: 'success',
-      title: 'Vials Approval Updated',
-      text: `${_VapprovalBool === false ? 'Revoked' : 'Approved'} $${VapprovalState.value.Vsymbol}`
+      title: 'Vials Approval',
+      text: `${_VapprovalBool === false ? 'Revoked' : 'Approved'} $${VapprovalState.value.Vsymbol} Approval For All`
     })
     loadUserVApproval()
     emitAppEvent({ type: 'VtokensChanged' })
