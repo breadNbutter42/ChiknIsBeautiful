@@ -236,11 +236,11 @@ onAppEvent(({ type }) => {
         <div class="font-bold">  {{ VapprovalState.vialsBurned }} of 2185</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">N Vials Burned</div>
+        <div class="text-xs font-celaraz">Type-N Burned</div>
         <div class="font-bold"> {{ VapprovalState.fVialsBurned }} of 2179</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">F Vials Burned</div>
+        <div class="text-xs font-celaraz">Type-F Burned</div>
         <div class="font-bold"> {{ VapprovalState.fVialsBurned }} of 6 </div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
