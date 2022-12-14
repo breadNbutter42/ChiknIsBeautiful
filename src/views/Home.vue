@@ -30,6 +30,7 @@ const { VsetApprovalForAll, Vsymbol, VbalanceOf, VisApprovedForAll } = useVialsC
 
 
 const loadVApprovalState = async () => {
+  if (!isAuthenticated.value) return Promise.resolve({ Vbalances: 0, _Vbalances: 0, Vsymbol: 'Vials', Vapproval: false, Cbalances: 0, Csymbol: 'Chads', Sbalances: 0, Ssymbol: 'Supers', fVialsBurned: 0, nVialsBurned: 0, vialsBurned: 0 })
   try {
     const [ _Vbalances, _Vsymbol, _Vapproval, _Cbalances, _Csymbol, _Sbalances, _Ssymbol, _fVialsBurned, _nVialsBurned, _vialsBurned ] = await Promise.all([VbalanceOf(), Vsymbol(), loadUserVApproval(), CbalanceOf(), Csymbol(), SbalanceOf(), Ssymbol(), fVialsBurned(), nVialsBurned(), vialsBurned()])
 
@@ -43,7 +44,7 @@ const loadVApprovalState = async () => {
       Ssymbol: _Ssymbol,
       fVialsBurned: _fVialsBurned,
       nVialsBurned: _nVialsBurned,
-      allVialsBurned: _vialsBurned
+      vialsBurned: _vialsBurned
     })
   } catch (error) {
     notify({
@@ -238,7 +239,7 @@ onAppEvent(({ type }) => {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">All Vials Burned</div>
-        <div class="font-bold">  {{ VapprovalState.allVialsBurned }} of 2185</div>
+        <div class="font-bold">  {{ VapprovalState.vialsBurned }} of 2185</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">N Vials Burned</div>
