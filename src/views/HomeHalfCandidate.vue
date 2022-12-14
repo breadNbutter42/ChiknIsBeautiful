@@ -1,12 +1,15 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { useAsyncState, useEventBus, useToggle } from '@vueuse/core'
+import { toRefs, ref, computed } from 'vue'
+import { useAsyncState, useEventBus, useToggle, useFetch } from '@vueuse/core'
 import { useChadsContract, useSupersContract, useVialsContract, useUser, useThirdContract } from '@/composables'
 import { notify } from 'notiwind'
 import { candidateIds, randomize } from '@/utils'
 
 const candidates = ref(randomize(candidateIds))
-
+///////////////
+const props = defineProps(['candidate', 'allowance'])//key -> value pairs https://vuejs.org/guide/components/props.html for keys candidate and allowance to their values
+const { candidate, allowance } = toRefs(props)//turn variables from reactive to normal
+///////////////
 const { on: onAppEvent, emit: emitAppEvent } = useEventBus('app')
 const { address, isAuthenticated, isAuthenticating, login } = useUser()
 const { SbalanceOf, Ssymbol } = useSupersContract(address)
@@ -166,6 +169,96 @@ onAppEvent(({ type }) => {
   
   events[type]?.() ?? null
 })
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//pull in stuff from Candidate
+const isImageLoaded = ref(false)//we prepare to fetch data w async so we start with false state defined for isExampleLoaded
+
+const emit = defineEmits(['load'])//emit the message that we are loading the page
+
+const loadState = async () => {//make a variable loadState which will store the info returned below
+  try {//try
+    const [userState, backend, metadata] = await Promise.all([//make four new variables at once
+      loadUserState(),//call this function to set stuff
+      useFetch(`https://api.chikn.farm/api/chikn/details/1`).get().json(),//call api via web link with variable, get image link and traits etc
+      useFetch(`https://api.chikn.farm/api/chikn/metadata/1`).get().json()//call api via web link with variable, get all kinds of chikn data
+    ])
+
+    return Promise.resolve({ //return the data we just got
+      userState,//loadUserState() returns the addressTotalVotesForID value uint of votes
+      backend: backend.data.value,//total votes for id number returns uint of votes
+      metadata: metadata.data.value,//metadata of chikn including image link
+    })
+  } catch (error) {//catch error
+    console.log(error)//log error
+  }
+}
+
+const { APIstate, isLoading, execute } = useAsyncState(() => loadState(), 0, { immediate: false })  //set some state info for async to set up for the next thing
+
+execute().then(() => {//call execute() promise and then() https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then
+  emit('load', { token: candidate.value.token, chiknName: APIstate.value.backend.name }) //emit loading data token, votes, chiknName data get
+})
+
+const onImageLoad = () => isImageLoaded.value = true//load  image
+
+const upgrade2Pending = ref(false)//get ready for next thing
+
+
+const upgradeChad2 = async (_id, _id) => {//write to the function with variables as inputs
+  upgradeChad2Pending.value = true//pending
+  try {//try
+    const tx = await upgradeChad2(Number(1), Number(2))//write transaction to function on chain, specify type and var
+    const receipt = await tx.wait()//save receipt of transaction status after write
+    notify({//notifications
+      type: 'success',//type
+      title: 'Upgrading',//title
+      text: `Upgraded ${_eggs} $${allowance.value.symbol} for #${_id}`//text with 
+    })
+    emitAppEvent({ type: 'tokensChanged' })
+    return Promise.resolve(receipt)
+  } catch (error) {//catch errors
+    notify({//error notify
+      type: 'error',//type
+      title: 'Voting',//title
+      text: error.reason ?? error.message//text
+    })
+  } finally {//after that
+    upgrade2Pending.value = false//change status
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 </script>
 
 
@@ -228,7 +321,7 @@ onAppEvent(({ type }) => {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">All Vials Burned</div>
-        <div class="font-bold"> {{state.allVialsBurned}}  / 2185 Burned</div>
+        <div class="font-bold"> {{state.allVialsBurned}} / 2185 Burned</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">N Vials Burned</div>
@@ -248,7 +341,7 @@ onAppEvent(({ type }) => {
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Supers Owned</div>
-        <div class="font-bold"> {{state.Sbalance}} {{state.Vsymbol}} SUPERS</div>
+        <div class="font-bold"> {{state.Sbalance}} SUPERS</div>
       </div>
     </div>
     <div class="mt-4 text-xs text-center flex flex-wrap gap-2 md:gap-6 italic">
@@ -260,7 +353,7 @@ onAppEvent(({ type }) => {
       </div>
     </div>
     <!---tests fine up to here if remove below-->
-    <!---<div class="mt-2 grid md:grid-cols-2 xl:grid-cols-3 gap-2">
+    <div class="mt-2 grid md:grid-cols-2 xl:grid-cols-3 gap-2">
       <Candidate 
         v-for="candidate in candidateIds"
         :key="candidate.id"
@@ -268,7 +361,7 @@ onAppEvent(({ type }) => {
         :allowance="allowanceState"
         @load="onCandidateLoad"
       />
-    </div> -->
+    </div>
     <!---don't remove below for tests          -->
     <Transition name="fade">
       <ChadChecker v-if="ChadChecker" :scores="candidatesSorted" @close="toggleChadChecker()" />

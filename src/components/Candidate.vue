@@ -1,15 +1,13 @@
 <script setup>
 import { toRefs, computed, ref } from 'vue'//reactive object to plain object,
 import { useAsyncState, useEventBus, useFetch } from '@vueuse/core'//wait for reply, events, ask for reply
-import { useThirdContract, useUser } from '@/composables'//use our contract, use user
+import { usThirdContract, useUser } from '@/composables'//use our contract, use user
 import { notify } from 'notiwind'//notifications
 
 const { address, isAuthenticated } = useUser()//check if user is signed in to wallet
 const { on: onAppEvent, emit: emitAppEvent } = useEventBus('app')//emit events
-const { chadToMinted } = useThirdContract(address)//functions within our contract from a particular contract address
+const { addressTotalVotesForIDNumber, returnTotalVotesForCandidateIDNumber, voteWithEggByCandidateNumber } = useVotingContract(address)//functions within our contract from a particular contract address
 
-const props = defineProps(['candidate', 'Vapproval'])//key -> value pairs https://vuejs.org/guide/components/props.html for keys candidate and allowance to their values
-const { candidate, Vapproval } = toRefs(props)//turn variables from reactive to normal
 
 
 
@@ -109,32 +107,6 @@ onAppEvent(({ type, payload }) => {//event logging?
 
 
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
-      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">All Vials Burned</div>
-        <div class="font-bold"> {{state.allVialsBurned}}  / 2185 Burned</div>
-      </div>
-      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">N Vials Burned</div>
-        <div class="font-bold"> {{state.nVialsBurned}}/ 2179 Type-N</div>
-      </div>
-      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">F Vials Burned</div>
-        <div class="font-bold"> {{state.fVialsBurned}}/ 6 Type-F</div>
-      </div>
-      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">Chads Owned</div>
-        <div class="font-bold"> {{state.Cbalance}} CHADS</div>
-      </div>
-      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">Vials Owned</div>
-        <div class="font-bold"> {{state.Vbalance}} VIALS</div>
-      </div>
-      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">Supers Owned</div>
-        <div class="font-bold"> {{state.Sbalance}} SUPERS</div>
-      </div>
-  </div>  
   <!-- 0k -->
   <div class="relative p-4 bg-gradient-to-tr from-red-200/10 rounded-3xl leading-none min-h-[200px] grid items-center">
     <LoadingOverlay v-if="isLoading" />

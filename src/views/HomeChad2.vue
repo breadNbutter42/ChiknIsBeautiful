@@ -166,6 +166,7 @@ onAppEvent(({ type }) => {
   
   events[type]?.() ?? null
 })
+
 </script>
 
 
