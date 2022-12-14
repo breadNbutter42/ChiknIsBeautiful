@@ -17,7 +17,7 @@ export default (address) => {
   
   const fVialsBurned = async () => await contract.fVialsBurned().then(response => String(response))
   const nVialsBurned = async () => await contract.nVialsBurned().then(response => String(response))
-  const allVialsBurned = async () => await contract.vialsBurned().then(response => String(response))
+  const vialsBurned = async () => await contract.vialsBurned().then(response => String(response))
   const fVialsSet = async () => await contract.fVialsSet().then(response => Boolean(response))
 
   //0 inputs, read
@@ -53,7 +53,7 @@ export default (address) => {
     upgradeChad,
     fVialsBurned,
     nVialsBurned,
-    allVialsBurned,
+    vialsBurned,
     fVialsSet,
     vialToF,
     chadToMinted
