@@ -1,115 +1,95 @@
 <script setup>
-import { toRefs, computed, ref } from 'vue'//reactive object to plain object,
-import { useAsyncState, useEventBus, useFetch } from '@vueuse/core'//wait for reply, events, ask for reply
-import { useVotingContract, useUser } from '@/composables'//use our contract, use user
-import { notify } from 'notiwind'//notifications
+import { toRefs, computed, ref } from 'vue'
+import { useAsyncState, useEventBus, useFetch } from '@vueuse/core'
+import { useVotingContract, useUser } from '@/composables'
+import { notify } from 'notiwind'
 
-const { address, isAuthenticated } = useUser()//check if user is signed in to wallet
-const { on: onAppEvent, emit: emitAppEvent } = useEventBus('app')//emit events
-const { addressTotalVotesForIDNumber, returnTotalVotesForCandidateIDNumber, voteWithEggByCandidateNumber } = useVotingContract(address)//functions within our contract from a particular contract address
+const { address, isAuthenticated } = useUser()
+const { on: onAppEvent, emit: emitAppEvent } = useEventBus('app')
+const { addressTotalVotesForIDNumber, returnTotalVotesForCandidateIDNumber, voteWithEggByCandidateNumber } = useVotingContract(address)
 
-const props = defineProps(['candidate', 'allowance'])//key -> value pairs https://vuejs.org/guide/components/props.html for keys candidate and allowance to their values
-const { candidate, allowance } = toRefs(props)//turn variables from reactive to normal
-
-
-
-
-const isImageLoaded = ref(false)//we prepare to fetch data w async so we start with false state defined for isExampleLoaded
-const emit = defineEmits(['load'])//emit the message that we are loading the page
+const props = defineProps(['candidate', 'allowance'])
+const { candidate, allowance } = toRefs(props)
+const isImageLoaded = ref(false)
+const emit = defineEmits(['load'])
 
 
-const loadUserState = async () => {//make a variable loadUserState which will store the info returned below
-  if (!isAuthenticated.value) return Promise.resolve(0)//if user is not signed in then resolve promise by returning a 0 as value, otherwise continue. This fixes errors.
+const loadUserState = async () => {
+  if (!isAuthenticated.value) return Promise.resolve(0)
 
-  const data = await addressTotalVotesForIDNumber(candidate.value.id)//make a variable data that stores results fetch to our on chain function; we defined which functon above
-  //this particular function requires two inputs, user address and candidate id, we have defined this function elsewhere and told it to also add in the user address whichis not shown here above
-  return Promise.resolve(data)//return data from our on chain function
+  const data = await addressTotalVotesForIDNumber(candidate.value.id)
+  return Promise.resolve(data)
 }
 
-
-
-
-const loadState = async () => {//make a variable loadState which will store the info returned below
-  try {//try
-    const [userState, votes, backend, metadata] = await Promise.all([//make four new variables at once
-      loadUserState(),//call this variable above
-      returnTotalVotesForCandidateIDNumber(candidate.value.id),//read this from on chain from our function we chose above, only needs to input that one variable to call function
-      useFetch(`https://api.chikn.farm/api/chikn/details/${candidate.value.token}`).get().json(),//call api via web link with variable, get image link and traits etc
-      useFetch(`https://api.chikn.farm/api/chikn/metadata/${candidate.value.token}`).get().json()//call api via web link with variable, get all kinds of chikn data
+const loadState = async () => {
+  try {
+    const [userState, votes, backend, metadata] = await Promise.all([
+      loadUserState(),
+      returnTotalVotesForCandidateIDNumber(candidate.value.id),
+      useFetch(`https://api.chikn.farm/api/chikn/details/${candidate.value.token}`).get().json(),
+      useFetch(`https://api.chikn.farm/api/chikn/metadata/${candidate.value.token}`).get().json()
     ])
 
-    return Promise.resolve({ //return the four variables data we just got
-      votes,//loadUserState returns the addressTotalVotesForID value uint of votes
-      backend: backend.data.value,//total votes for id number returns uint of votes
-      metadata: metadata.data.value,//metadata of chikn including image link
-      userState//data like if user owns chikn maybe
+    return Promise.resolve({
+      votes,
+      backend: backend.data.value,
+      metadata: metadata.data.value,
+      userState
     })
-  } catch (error) {//catch error
-    console.log(error)//log error
+  } catch (error) {
+    console.log(error)
   }
 }
 
+const { state, isLoading, execute } = useAsyncState(() => loadState(), 0, { immediate: false })
 
-
-//this seems like the body of the code, above functions and variables are defined are defined
-
-
-
-const { state, isLoading, execute } = useAsyncState(() => loadState(), 0, { immediate: false })  //set some state info for async to set up for the next thing
-
-execute().then(() => {//call execute() promise and then() https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then
-  emit('load', { token: candidate.value.token, votes: state.value.votes, chiknName: state.value.backend.name }) //emit loading data token, votes, chiknName data get
+execute().then(() => {
+  emit('load', { token: candidate.value.token, votes: state.value.votes, chiknName: state.value.backend.name })
 })
 
-const onImageLoad = () => isImageLoaded.value = true//load chikn image
+const onImageLoad = () => isImageLoaded.value = true
 
-const eggCount = ref(0)//set egg count stored in ref slot 0
+const eggCount = ref(0)
 
-const votePending = ref(false)//get ready for next thing
+const votePending = ref(false)
+const vote = async (_id, _eggs) => {
+  votePending.value = true
+  try {
+    const tx = await voteWithEggByCandidateNumber(Number(_id), Number(_eggs))
+    const receipt = await tx.wait()
 
-
-
-const vote = async (_id, _eggs) => {//write to the votewitheggsbycandidate function with variables as inputs
-  votePending.value = true//pending
-  try {//try
-    const tx = await voteWithEggByCandidateNumber(Number(_id), Number(_eggs))//write transaction to function on chain, specify type and var
-    const receipt = await tx.wait()//save receipt of transaction status after write
-    notify({//notifications
-      type: 'success',//type
-      title: 'Voting',//title
-      text: `Voted ${_eggs} $${allowance.value.symbol} for #${_id}`//text with 
+    notify({
+      type: 'success',
+      title: 'Voting',
+      text: `Voted ${_eggs} $${allowance.value.symbol} for #${_id}`
     })
     emitAppEvent({ type: 'tokensChanged' })
+
     return Promise.resolve(receipt)
-  } catch (error) {//catch errors
-    notify({//error notify
-      type: 'error',//type
-      title: 'Voting',//title
-      text: error.reason ?? error.message//text
+  } catch (error) {
+    notify({
+      type: 'error',
+      title: 'Voting',
+      text: error.reason ?? error.message
     })
-  } finally {//after that
-    votePending.value = false//change status
+  } finally {
+    votePending.value = false
   }
 }
 
-
-onAppEvent(({ type, payload }) => {//event logging?
-  const events = {//declare events
-    'tokensChanged': () => execute(),//tokenchanged execute
-    'accountsChanged': () => {//accountschange
-      if (isAuthenticated.value) execute()//if execute
+onAppEvent(({ type, payload }) => {
+  const events = {
+    'tokensChanged': () => execute(),
+    'accountsChanged': () => {
+      if (isAuthenticated.value) execute()
     }
   }
   
-  events[type]?.() ?? null//null
+  events[type]?.() ?? null
 })
-
-//end of script
 </script>
 
-
 <template>
-  <!-- 0k -->
   <div class="relative p-4 bg-gradient-to-tr from-red-200/10 rounded-3xl leading-none min-h-[200px] grid items-center">
     <LoadingOverlay v-if="isLoading" />
 
