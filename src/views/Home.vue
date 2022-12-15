@@ -269,7 +269,7 @@ let vialID = ref(0)
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Type-N Burned</div>
-        <div class="font-bold"> {{ VapprovalState.fVialsBurned }} of 2179</div>
+        <div class="font-bold"> {{ VapprovalState.nVialsBurned }} of 2179</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
         <div class="text-xs font-celaraz">Type-F Burned</div>
