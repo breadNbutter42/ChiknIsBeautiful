@@ -242,7 +242,7 @@ let vialID = ref(0)
             {{ VapprovalState.Vapproval === false ? 'Approve' : 'Revoke' }} All ${{ VapprovalState.Vsymbol }}
           </Button>
           <Button @click="toggleChadChecker()">
-            ChadChecker
+            Open ChadChecker
           </Button>
         </div>
       </template>
@@ -336,7 +336,7 @@ let vialID = ref(0)
       </div>
     </div>
 
-    <!---tests fine up to here if remove below-->
+    <!---was going to try to get api working to get images of chads into square boxes-->
 
 
     
@@ -524,7 +524,7 @@ let vialID = ref(0)
 
 
 
-    <!---<div class="mt-2 grid md:grid-cols-2 xl:grid-cols-3 gap-2">
+    <div class="mt-2 grid md:grid-cols-2 xl:grid-cols-3 gap-2">
       <Candidate 
         v-for="candidate in candidateIds"
         :key="candidate.id"
@@ -532,8 +532,7 @@ let vialID = ref(0)
         :allowance="allowanceState"
         @load="onCandidateLoad"
       />
-    </div> -->
-    <!---don't remove below for tests          -->
+    </div> 
     <Transition name="fade">
       <ChadChecker v-if="chadChecker" :scores="candidatesSorted" @close="toggleChadChecker()" />
     </Transition>
