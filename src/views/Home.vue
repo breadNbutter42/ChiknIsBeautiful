@@ -332,7 +332,7 @@ let vialID = ref(0)
         Check if Chad has been upgraded already with ChadChecker. 
       </div>
       <div class="text-blue-200">
-        Burn a vial to upgrade a Chad Doge and create a Super.
+        Enter the Lab and burn a Vial to create a Super.
       </div>
     </div>
 
