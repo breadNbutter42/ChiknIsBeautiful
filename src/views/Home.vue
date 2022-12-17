@@ -5,6 +5,121 @@ import { useChadsContract, useSupersContract, useVialsContract, useUser, useThir
 import { notify } from 'notiwind'
 import { candidateIds, randomize } from '@/utils'
 
+
+
+
+
+
+
+
+
+
+import md5 from './md5.js'	
+
+
+try {	
+  if (window && !window.Buffer) {	
+    insertWindowPolyFill();	
+  }	
+} catch (e) {	
+  // Do nothing	
+}	
+function insertWindowPolyFill() {	
+  window.Buffer = {	
+    from: function(str) {	
+      return {	
+        toString: function() {	
+          return btoa(str);	
+        },	
+      };	
+    },	
+  };	
+}	
+class RequestBuilder {	
+  constructor(url, publicKey, privateKey, ttl) {	
+    this._url = url;	
+    this._publicKey = publicKey;	
+    this._privateKey = privateKey;	
+    this._ttl = typeof ttl === 'number' ? ttl : 10000;	
+  }	
+  buildWalletTokensRequest(address, collectionAddress, nextMarker) {	
+    return {	
+      url: this._buildUrl(`/v1/wallet/${address}/tokens`, {	
+        collection: collectionAddress,	
+        nextMarker: nextMarker,	
+      }),	
+      headers: {	
+        'x-api-token': this._generateToken(),	
+      }	
+    };	
+  }	
+  buildCollectionInfoRequest(address) {	
+    return {	
+      url: this._buildUrl(`/v1/collection/${address}`, {	
+        address: address,	
+      }),	
+      headers: {	
+        'x-api-token': this._generateToken(),	
+      }	
+    };	
+  }	
+  buildCollectionTokensRequest(address, nextMarker) {	
+    return {	
+      url: this._buildUrl(`/v1/collection/${address}/tokens`, {	
+        address: address,	
+        nextMarker: nextMarker,	
+      }),	
+      headers: {	
+        'x-api-token': this._generateToken(),	
+      }	
+    };	
+  }	
+  _buildUrl(path, queryParams) {	
+    let queryString = this._buildQueryString(queryParams);	
+    return `${this._url}${path}${queryString}`;	
+  }	
+  _buildQueryString(params) {	
+    const q = [];	
+    for (let i in params) {	
+      if (params.hasOwnProperty(i)) {	
+        if (params[i] === null || typeof params[i] === 'undefined') {	
+          continue;	
+        }	
+        q.push(`${i}=${encodeURIComponent(params[i])}`);	
+      }	
+    }	
+    if (q.length > 0) {	
+      return `?${q.join('&')}`;	
+    }	
+    return '';	
+  }	
+  _generateToken() {	
+    const str = Buffer.from(JSON.stringify({	
+      publicKey: this._publicKey	
+    })).toString('base64');	
+    const expires = Date.now() + this._ttl;	
+    return `${str}$$${expires}$$${md5(str + expires + this._privateKey)}`;	
+  }	
+}	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const candidates = ref(randomize(candidateIds))
 
 const { on: onAppEvent, emit: emitAppEvent } = useEventBus('app')
