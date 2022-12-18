@@ -337,13 +337,13 @@ let vialID = ref(0)
     <div class="flex flex-wrap justify-between items-center">
       <div class="text-center mx-auto md:mx-0 font-celaraz">
         <div class="font-black text-5xl text-blue-300">
-          THE LAB (TEST ONLY, DO NOT USE)
+          THE LAB
         </div>
         <div class="text-2xl text-blue-300">
-          Burn Vials (TEST ONLY, DO NOT USE)
+          Burn Vials
         </div>
         <div class="mt-2 mb-8 text-xs text-blue-200">
-          Upgrade Chad Doge to get a Super (TEST ONLY, DO NOT USE)
+          Upgrade Chad Doge to get a Super
         </div>
       </div>
 
