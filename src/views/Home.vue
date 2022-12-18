@@ -250,7 +250,6 @@ const setVApprovalForAll = async (_VapprovalBool) => {
       title: 'Vials Approval',
       text: `${_VapprovalBool === false ? 'Revoked' : 'Approved'} $${VapprovalState.value.Vsymbol} Approval For All`
     })
-    loadUserVApproval()
     emitAppEvent({ type: 'VtokensChanged' })
 
     return Promise.resolve(receipt)
@@ -262,20 +261,22 @@ const setVApprovalForAll = async (_VapprovalBool) => {
     })
   } finally {
     VapprovalPending.value = false
+    loadUserVApproval()
+
   }
 }
 
 const upgradePending = ref(false)
-const upgradeTheChad = async () => {
+const upgradeTheChad = async (_vialID, _chadID) => {
   upgradePending.value = true
   try {
-    const tx = await upgradeChad()
+    const tx = await upgradeChad(Number(_vialID), Number(_chadID))
     const receipt = await tx.wait()
 
     notify({
       type: 'success',
       title: 'Upgrading',
-      text: `Chad Upgraded: Burned Vial And Received Super`
+      text: `Chad #${_chadID} Upgraded: Burned Vial #${_vialID} And Received Super`
     })
     emitAppEvent({ type: 'VtokensChanged' })
 
@@ -288,6 +289,7 @@ const upgradeTheChad = async () => {
     })
   } finally {
     upgradePending.value = false
+    loadUserVApproval()
   }
 }
 
@@ -378,8 +380,8 @@ let vialID = ref(0)
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
-      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
-        <div class="text-xs font-celaraz">All Vials Burned</div>
+      <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-venter">
+        <div class="text-xs font-celaraz">All Vials Burned: </div>
         <div class="font-bold">  {{ VapprovalState.vialsBurned }} of 2185</div>
       </div>
       <div class="px-6 py-4 shadow-sm bg-gradient-to-tr from-red-200/10 rounded-2xl flex justify-between items-center">
@@ -433,9 +435,9 @@ let vialID = ref(0)
 
       <div class="text-right self-end">
             <Button
-              :disabled="!VapprovalState.Vapproval || !VapprovalState.Cbalances > 0 || !VapprovalState.Vbalances > 0 || !VapprovalState.fVialsSet"
               :loading="upgradePending"
-              @click="upgradeChad(vialID, chadID)"
+              :disabled="upgradePending || !VapprovalState.Cbalances > 0 || !VapprovalState.Vbalances > 0 || !VapprovalState.fVialsSet"
+              @click="upgradeTheChad(vialID, chadID)"
             >
             ENTER WITH CAUTION
             </Button>
